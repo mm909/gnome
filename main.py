@@ -9,7 +9,7 @@ def update():
     win.fill(background_colour)
     map.draw(win)
     pygame.display.flip()
-    return 1
+    return
 
 background_colour = (0,0,0)
 

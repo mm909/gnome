@@ -5,13 +5,14 @@ from random import *
 class Map:
     def __init__(self):
 
+        # Import from settings file
         self.cameraOffsetX    = cameraOffsetX
         self.cameraOffsetY    = cameraOffsetY
         self.switchWallStatus = switchWallStatus
         self.debug = debug
+
         self.dirt = pygame.image.load("map/grey_dirt0.png").convert()
         self.wall = pygame.image.load("map/stone2_gray0.png").convert()
-
 
         self.map = Map.createBackground(self)
         self.connected = []
@@ -107,8 +108,17 @@ class Map:
             roomY = randint(0 + int(tilesY*offset), tilesY-1 - int(tilesY * offset))
             roomWidth = randint(roomMinWidth, roomMaxWidth)
             roomHeight = randint(roomMinHeight, roomMaxHeight)
-            # if roomX + roomWidth >= tilesX:
-            #     roomX =
+            if roomX + roomWidth >= tilesX:
+                 roomX = tilesX - 1 -roomX - roomWidth
+                 if roomX < 1:
+                     roomWidth += roomX -1
+                     roomX = 1
+
+            if roomY + roomHeight >= tilesY:
+                roomY = tilesY - 1 -roomY - roomHeight
+                if roomY < 1:
+                    roomHeight += roomY -1
+                    roomY = 1
 
             self.map[roomY][roomX] = 0
             for j  in range(roomHeight):
