@@ -1,7 +1,7 @@
 import pygame
 from map import *
 from random import *
-from mapGenSettings import *
+from settings import *
 
 pygame.init()
 

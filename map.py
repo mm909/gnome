@@ -1,5 +1,5 @@
 import pygame
-from mapGenSettings import *
+from settings import *
 from random import *
 
 class Map:
