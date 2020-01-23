@@ -102,29 +102,31 @@ class Map:
             self.map.append(backgroundRow)
         roomNumber = randint(roomMin,roomMax)
 
-        offset = 0.05
+        #offset = 0.03
+        offsetX = 1
+        offsetY = 1
         for i in range(roomNumber):
-            roomX = randint(0 + int(tilesX*offset), tilesX-1 - int(tilesX * offset))
-            roomY = randint(0 + int(tilesY*offset), tilesY-1 - int(tilesY * offset))
+            roomX = randint(offsetX, tilesX-1 - offsetX)
+            roomY = randint(offsetY, tilesY-1 - offsetY)
             roomWidth = randint(roomMinWidth, roomMaxWidth)
             roomHeight = randint(roomMinHeight, roomMaxHeight)
-            if roomX + roomWidth >= tilesX:
-                 roomX = tilesX - 1 -roomX - roomWidth
-                 if roomX < 1:
-                     roomWidth += roomX -1
-                     roomX = 1
+            if roomX + roomWidth > tilesX - offsetX:
+                 roomX = (tilesX - offsetX) - 1 -roomX - roomWidth
+                 if roomX < offsetX:
+                     roomWidth += roomX - offsetX
+                     roomX = offsetX
 
-            if roomY + roomHeight >= tilesY:
-                roomY = tilesY - 1 -roomY - roomHeight
-                if roomY < 1:
-                    roomHeight += roomY -1
-                    roomY = 1
+            if roomY + roomHeight > tilesY -offsetY:
+                roomY = (tilesY - offsetY) - 1 -roomY - roomHeight
+                if roomY < offsetX:
+                    roomHeight += roomY - offsetY
+                    roomY = offsetY
 
             self.map[roomY][roomX] = 0
             for j  in range(roomHeight):
-                if(roomY + j >= 1 and roomY + j < tilesY -1):
+                if(roomY + j >= offsetY and roomY + j < tilesY - offsetY):
                     for k in range(roomWidth):
-                        if(roomX + k >= 1 and roomX + k < tilesX -1):
+                        if(roomX + k >= offsetX and roomX + k < tilesX - offsetX):
                             self.map[roomY + j][roomX + k] = 0
         return self.map
 
