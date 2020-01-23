@@ -8,10 +8,33 @@ class Map:
         self.cameraOffsetX    = cameraOffsetX
         self.cameraOffsetY    = cameraOffsetY
         self.switchWallStatus = switchWallStatus
+        self.debug = debug
+        self.dirt = pygame.image.load("map/grey_dirt0.png").convert()
+        self.wall = pygame.image.load("map/stone2_gray0.png").convert()
+
 
         self.map = Map.createBackground(self)
-        visitedBackground = []
+        self.connected = []
+        self.visitedBackground = []
         Map.connectRooms(self)
+
+    def draw(self, window):
+        for i, backgroundRow in enumerate(self.map):
+            for j, tile in enumerate(backgroundRow):
+                if(tile == 0):
+                    window.blit(self.dirt, (j * 32 + self.cameraOffsetX, i * 32 + self.cameraOffsetY))
+                elif(tile == 1):
+                    window.blit(self.wall, (j * 32 + self.cameraOffsetX, i * 32 + self.cameraOffsetY))
+                pass
+            pass
+        if self.debug:
+            self.connected = []
+            self.visitedBackground = []
+            startX, startY = Map.getStartPoint(self)
+            Map.connected(self, startX, startY)
+            for node in self.connected:
+                pygame.draw.rect(window, (100,255,100), (node[0] * 32 + 12 + self.cameraOffsetX, node[1] * 32 + 12 + self.cameraOffsetY, 8, 8))
+        return
 
     def getMouseCoords(self):
         coords = pygame.mouse.get_pos()
@@ -35,6 +58,7 @@ class Map:
                 if self.map[i][j] == 0:
                     startX = j
                     startY = i
+                    self.connected.append((j,i))
                     # pygame.draw.rect(win, (255,255,255), (j * 32 + 12 + cameraOffsetX, i * 32 + 12 + cameraOffsetY, 8, 8))
                     return startX, startY
         return startX, startY
@@ -44,7 +68,7 @@ class Map:
         startY = -1
         for i, backgroundRow in enumerate(self.map):
             for j, tile in enumerate(backgroundRow):
-                if self.map[i][j] == 0 and not (j , i) in visitedBackground:
+                if self.map[i][j] == 0 and not (j , i) in self.visitedBackground:
                     startX = j
                     startY = i
                     # pygame.draw.rect(win, (255,255,255), (j * 32 + 12 + cameraOffsetX, i * 32 + 12 + cameraOffsetY, 8, 8))
@@ -52,7 +76,7 @@ class Map:
         return startX, startY
 
     def connected(self, x,y):
-        visitedBackground.append((x,y))
+        self.visitedBackground.append((x,y))
         if x >= 0 and x < tilesX and y >= 0 and y < tilesY:
             for i in range(-1, 2):
                 neighborX = x + i
@@ -61,8 +85,9 @@ class Map:
                         if i == 0 or j == 0:   #only does dfs on non-diagonal neighbors to stop diagonal only path connections if  (abs(i) != 1 or abs(j) != 1):
                             neighborY = y + j
                             if neighborY >= 0 and neighborY < tilesY:
-                                if self.map[neighborY][neighborX] == 0 and not (neighborX,neighborY) in visitedBackground:
+                                if self.map[neighborY][neighborX] == 0 and not (neighborX,neighborY) in self.visitedBackground:
                                     if not (i == 0 and j == 0):
+                                        self.connected.append((neighborX,neighborY))
                                         # pygame.draw.rect(win, (100,255,100), (neighborX * 32 + 12 + cameraOffsetX, neighborY * 32 + 12 + cameraOffsetY, 8, 8))
                                         Map.connected(self, neighborX, neighborY)
         return
@@ -82,17 +107,19 @@ class Map:
             roomY = randint(0 + int(tilesY*offset), tilesY-1 - int(tilesY * offset))
             roomWidth = randint(roomMinWidth, roomMaxWidth)
             roomHeight = randint(roomMinHeight, roomMaxHeight)
+            # if roomX + roomWidth >= tilesX:
+            #     roomX =
+
             self.map[roomY][roomX] = 0
             for j  in range(roomHeight):
-                if(roomY + j >= 0 and roomY + j < tilesY):
+                if(roomY + j >= 1 and roomY + j < tilesY -1):
                     for k in range(roomWidth):
-                        if(roomX + k >= 0 and roomX + k < tilesX):
+                        if(roomX + k >= 1 and roomX + k < tilesX -1):
                             self.map[roomY + j][roomX + k] = 0
         return self.map
 
     def connectRooms(self):
-        global visitedBackground
-        visitedBackground = []
+        self.visitedBackground = []
         startX, startY = Map.getStartPoint(self)
         Map.connected(self, startX, startY)
         endX, endY = Map.findClusterPoint(self)
@@ -103,7 +130,6 @@ class Map:
         return
 
     def createPath(self, startX, startY, endX, endY):
-        global visitedBackground
         dx = 0
         dy = 0
 
@@ -124,7 +150,7 @@ class Map:
         moveX = randint(0,1)
         currX = startX
         currY = startY
-        while not (endX, endY) in visitedBackground:
+        while not (endX, endY) in self.visitedBackground:
             #visitedBackground = []
             if  moveX == True:
                 if slopeX >0:
