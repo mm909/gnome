@@ -1,14 +1,21 @@
 import pygame
+from mapGenSettings import *
 from random import *
 pygame.init()
 
-def switchWall():
+def getMouseCoords():
     coords = pygame.mouse.get_pos()
-    mx = coords[0]
-    my = coords[1]
+    mx = coords[0] - cameraOffsetX
+    my = coords[1] - cameraOffsetY
+    return mx, my
+
+def switchWall():
+    mx, my = getMouseCoords()
+    print(mx,my)
     mx = int(mx / 32)
     my = int(my / 32)
-    background[my][mx] = switchWallStatus
+    if my >= 0 and my < tilesY and mx >= 0 and mx < tilesX:
+        background[my][mx] = switchWallStatus
     return
 
 def getStartPoint():
@@ -19,7 +26,7 @@ def getStartPoint():
             if background[i][j] == 0:
                 startX = j
                 startY = i
-                pygame.draw.rect(win, (255,255,255), (j * 32 + 12, i * 32 + 12, 8, 8))
+                pygame.draw.rect(win, (255,255,255), (j * 32 + 12 + cameraOffsetX, i * 32 + 12 + cameraOffsetY, 8, 8))
                 return startX, startY
     return startX, startY
 
@@ -31,7 +38,7 @@ def findClusterPoint(): #will be used to find the next room to create a path too
             if background[i][j] == 0 and not (j , i) in visitedBackground:
                 startX = j
                 startY = i
-                pygame.draw.rect(win, (255,255,255), (j * 32 + 12, i * 32 + 12, 8, 8))
+                pygame.draw.rect(win, (255,255,255), (j * 32 + 12 + cameraOffsetX, i * 32 + 12 + cameraOffsetY, 8, 8))
                 return startX, startY
     return startX, startY
 
@@ -47,7 +54,7 @@ def connected(x,y):
                         if neighborY >= 0 and neighborY < tilesY:
                             if background[neighborY][neighborX] == 0 and not (neighborX,neighborY) in visitedBackground:
                                 if not (i == 0 and j == 0):
-                                    pygame.draw.rect(win, (100,255,100), (neighborX * 32 + 12, neighborY * 32 + 12, 8, 8))
+                                    pygame.draw.rect(win, (100,255,100), (neighborX * 32 + 12 + cameraOffsetX, neighborY * 32 + 12 + cameraOffsetY, 8, 8))
                                     connected(neighborX, neighborY)
     return
 
@@ -58,15 +65,15 @@ def createBackground():
         for j in range(tilesX):
             backgroundRow.append(1)
         background.append(backgroundRow)
-    roomNumber = randint(3,7)
+    roomNumber = randint(roomMin,roomMax)
 
 
     offset = 0.05
     for i in range(roomNumber):
         roomX = randint(0 + int(tilesX*offset), tilesX-1 - int(tilesX * offset))
         roomY = randint(0 + int(tilesY*offset), tilesY-1 - int(tilesY * offset))
-        roomWidth = randint(2,8)
-        roomHeight = randint(2,6)
+        roomWidth = randint(roomMinWidth, roomMaxWidth)
+        roomHeight = randint(roomMinHeight, roomMaxHeight)
         background[roomY][roomX] = 0
         for j  in range(roomHeight):
             if(roomY + j >= 0 and roomY + j < tilesY):
@@ -136,13 +143,14 @@ def update():
     for i, backgroundRow in enumerate(background):
         for j, tile in enumerate(backgroundRow):
             if(tile == 0):
-                win.blit(dirt, (j * 32, i * 32))
+                win.blit(dirt, (j * 32 + cameraOffsetX, i * 32 + cameraOffsetY))
             elif(tile == 1):
-                win.blit(wall, (j * 32, i * 32))
+                win.blit(wall, (j * 32 + cameraOffsetX, i * 32 + cameraOffsetY))
             pass
         pass
-    startX, startY = getStartPoint()
-    connected(startX, startY)
+    if debug:
+        startX, startY = getStartPoint()
+        connected(startX, startY)
 
     visitedBackground = []
     pygame.display.flip()
@@ -150,11 +158,12 @@ def update():
 
 switchWallStatus = 0
 
-width = 1024
-height = 768
-tilesX = int(width / 32)
-tilesY = int(height / 32)
-background_colour = (255,255,255)
+cameraOffsetX = 0
+cameraOffsetY = 0
+cameraSpeed = 5
+debug = 0
+
+background_colour = (0,0,0)
 
 win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Gnome")
@@ -182,6 +191,21 @@ while running:
                 switchWallStatus = not switchWallStatus
         if pygame.mouse.get_pressed()[0]:
             switchWall()
+
+    if pygame.key.get_pressed()[pygame.K_F2]:
+        debug = True
+    else:
+        debug = False
+
+    if pygame.key.get_pressed()[pygame.K_w]:
+        cameraOffsetY += cameraSpeed
+    if pygame.key.get_pressed()[pygame.K_a]:
+        cameraOffsetX += cameraSpeed
+    if pygame.key.get_pressed()[pygame.K_s]:
+        cameraOffsetY -= cameraSpeed
+    if pygame.key.get_pressed()[pygame.K_d]:
+        cameraOffsetX -= cameraSpeed
+
     visitedBackground = []
     update()
 pygame.quit()
