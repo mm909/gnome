@@ -106,20 +106,25 @@ def createPath(startX, startY, endX, endY):
     currX = startX
     currY = startY
     while not (endX, endY) in visitedBackground:
-        if slopeX > 0 and moveX == True:
-            currX = currX + dx
-            background[currY][currX] = 0
-            slopeX = slopeX - 1
-            visitedBackground = []
-            connected(startX, startY)
-        elif slopeY > 0 and moveX == False:
-            currY = currY + dy
-            background[currY][currX] = 0
-            slopeY = slopeY - 1
-            visitedBackground = []
-            connected(startX, startY)
+        if  moveX == True:
+            if slopeX >0:
+                currX = currX + dx
+                background[currY][currX] = 0
+                slopeX = slopeX - 1
+                visitedBackground = []
+                connected(startX, startY)
+            else:
+                moveX = False
 
-        moveX = not moveX
+        elif moveX == False:
+            if slopeY > 0:
+                currY = currY + dy
+                background[currY][currX] = 0
+                slopeY = slopeY - 1
+                visitedBackground = []
+                connected(startX, startY)
+            else:
+                moveX = True
 
     return
 
