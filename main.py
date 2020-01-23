@@ -60,9 +60,11 @@ def createBackground():
         background.append(backgroundRow)
     roomNumber = randint(3,7)
 
+
+    offset = 0.05
     for i in range(roomNumber):
-        roomX = randint(0, tilesX-1)
-        roomY = randint(0, tilesY-1)
+        roomX = randint(0 + int(tilesX*offset), tilesX-1 - int(tilesX * offset))
+        roomY = randint(0 + int(tilesY*offset), tilesY-1 - int(tilesY * offset))
         roomWidth = randint(2,8)
         roomHeight = randint(2,6)
         background[roomY][roomX] = 0
@@ -74,6 +76,8 @@ def createBackground():
     return background
 
 def connectRooms():
+    global visitedBackground
+    visitedBackground = []
     startX, startY = getStartPoint()
     connected(startX, startY)
     endX, endY = findClusterPoint()
@@ -102,17 +106,17 @@ def createPath(startX, startY, endX, endY):
         dy = -1
 
     #print(endX, endY)
-    moveX = True
+    moveX = randint(0,1)
     currX = startX
     currY = startY
     while not (endX, endY) in visitedBackground:
+        #visitedBackground = []
         if  moveX == True:
             if slopeX >0:
                 currX = currX + dx
                 background[currY][currX] = 0
                 slopeX = slopeX - 1
-                visitedBackground = []
-                connected(startX, startY)
+                connected(currX, currY)
             else:
                 moveX = False
 
@@ -121,8 +125,7 @@ def createPath(startX, startY, endX, endY):
                 currY = currY + dy
                 background[currY][currX] = 0
                 slopeY = slopeY - 1
-                visitedBackground = []
-                connected(startX, startY)
+                connected(currX, currY)
             else:
                 moveX = True
 
@@ -163,7 +166,6 @@ wall = pygame.image.load("map/stone2_gray0.png").convert()
 
 background = createBackground()
 visitedBackground = []
-
 connectRooms()
 
 pygame.display.flip()
