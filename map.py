@@ -18,6 +18,10 @@ class Map:
         # self.dirt = pygame.image.load("map/grey_dirt0.png").convert()
         # self.wall = pygame.image.load("map/stone2_gray0.png").convert()
 
+        self.sprites = []
+        self.sprites.append(self.dirt)
+        self.sprites.append(self.wall)
+
         self.map = Map.createBackground(self)
         self.connected = []
         self.visitedBackground = []
@@ -25,18 +29,32 @@ class Map:
 
     def draw(self, window):
         for i, backgroundRow in enumerate(self.map):
+            y = i * 32 + self.cameraOffsetY
+            if y + spriteSize < 0:
+                continue
+            elif y >= height:
+                break
             for j, tile in enumerate(backgroundRow):
-                if(tile == 0):
-                    self.dirt.draw(window, (j * 32 + self.cameraOffsetX, i * 32 + self.cameraOffsetY))
-                elif(tile == 1):
-                    self.wall.draw(window, (j * 32 + self.cameraOffsetX, i * 32 + self.cameraOffsetY))
+                x = j * 32 + self.cameraOffsetX
+                if x + spriteSize <0:
+                    continue
+                elif x >= width:
+                    break
+                self.sprites[tile].draw(window, (x, y))
+                # if(tile == 0):
+                #     self.wall.draw(window, (j * 32 + self.cameraOffsetX, i * 32 + self.cameraOffsetY))
+                # elif(tile == 1):
+                #     self.wall.draw(window, (j * 32 + self.cameraOffsetX, i * 32 + self.cameraOffsetY))
                 pass
             pass
         if self.debug:
-            self.connected = []
-            self.visitedBackground = []
-            startX, startY = Map.getStartPoint(self)
-            Map.connected(self, startX, startY)
+            #moved into a debugDFS function as to reduce overhead for every frame
+            # self.connected = []
+            # self.visitedBackground = []
+            # startX, startY = Map.findClusterPoint(self)
+            # while startX != -1 and startY != -1:
+            #     Map.connected(self, startX, startY)
+            #     startX, startY = Map.findClusterPoint(self)
             for node in self.connected:
                 pygame.draw.rect(window, (100,255,100), (node[0] * 32 + 12 + self.cameraOffsetX, node[1] * 32 + 12 + self.cameraOffsetY, 8, 8))
         return
@@ -82,6 +100,7 @@ class Map:
 
     def connected(self, x,y):
         self.visitedBackground.append((x,y))
+        self.connected.append((x,y))
         if x >= 0 and x < tilesX and y >= 0 and y < tilesY:
             for i in range(-1, 2):
                 neighborX = x + i
@@ -146,6 +165,10 @@ class Map:
                     for k in range(roomWidth):
                         if(roomX + k >= offsetX and roomX + k < tilesX - offsetX):
                             self.map[roomY + j][roomX + k] = 0
+
+        self.connected = []
+        self.visitedBackground = []
+        self.debugDFS()
         return self.map
 
     def connectRooms(self):
@@ -199,5 +222,23 @@ class Map:
                     Map.connected(self, currX, currY)
                 else:
                     moveX = True
+
+        return
+
+    def debugToggle(self):
+        if self.debug == True:
+            self.debug = False
+        else:
+            self.debug = True
+            self.debugDFS()
+
+    def debugDFS(self):
+        if self.debug == True:
+            self.connected = []
+            self.visitedBackground = []
+            startX, startY = Map.findClusterPoint(self)
+            while startX != -1 and startY != -1:
+                Map.connected(self, startX, startY)
+                startX, startY = Map.findClusterPoint(self)
 
         return

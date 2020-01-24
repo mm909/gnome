@@ -31,7 +31,10 @@ while running:
             running = False
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_F1:
-                map = Map()
+                #map = Map()
+                map.createBackground()
+            if event.key == pygame.K_F2:
+                map.debugToggle()
             if event.key == pygame.K_f:
                 map.switchWallStatus = not map.switchWallStatus
             if event.key == pygame.K_h:
@@ -48,10 +51,10 @@ while running:
         if pygame.mouse.get_pressed()[0]:
             map.switchWall()
 
-    if pygame.key.get_pressed()[pygame.K_F2]:
-        map.debug = True
-    else:
-        map.debug = False
+    # if pygame.key.get_pressed()[pygame.K_F2]:
+    #     map.debug = True
+    # else:
+    #     map.debug = False
 
     if pygame.key.get_pressed()[pygame.K_w]:
         map.cameraOffsetY += cameraSpeed
@@ -62,6 +65,5 @@ while running:
     if pygame.key.get_pressed()[pygame.K_d]:
         map.cameraOffsetX -= cameraSpeed
 
-    visitedBackground = []
     update()
 pygame.quit()
