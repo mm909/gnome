@@ -36,6 +36,14 @@ while running:
                 map.switchWallStatus = not map.switchWallStatus
             if event.key == pygame.K_h:
                 map.connectRooms()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 4:
+                spriteSize = min(spriteSize + 2, 64)
+                print(spriteSize)
+            if event.button == 5:
+                spriteSize = max(spriteSize - 2, 0)
+                print(spriteSize)
+
 
         if pygame.mouse.get_pressed()[0]:
             map.switchWall()
