@@ -106,22 +106,23 @@ class Map:
         offsetX = 1
         offsetY = 1
         for i in range(roomNumber):
-            roomX = randint(offsetX, tilesX-1 - offsetX)
-            roomY = randint(offsetY, tilesY-1 - offsetY)
+            roomX = randint(offsetX, tilesX- 1 - offsetX)
+            roomY = randint(offsetY, tilesY- 1 - offsetY)
             roomWidth = randint(roomMinWidth, roomMaxWidth)
             roomHeight = randint(roomMinHeight, roomMaxHeight)
-            if roomX + roomWidth >= tilesX - offsetX:
-                 roomX -= (tilesX - offsetX) - (roomX + roomWidth - 1)
+            print(roomX, roomY, roomWidth, roomHeight)
+            if roomX + roomWidth -1 >= tilesX - offsetX:
+                 roomX += (tilesX - offsetX -1) - (roomX + roomWidth - 1)
                  if roomX < offsetX:
                      roomWidth += roomX - offsetX
                      roomX = offsetX
 
-            if roomY + roomHeight >= tilesY -offsetY:
-                roomY -= (tilesY - offsetY) - (roomY + roomHeight - 1)
+            if roomY + roomHeight -1 >= tilesY -offsetY:
+                roomY += (tilesY - offsetY -1) - (roomY + roomHeight - 1)
                 if roomY < offsetY:
                     roomHeight += roomY - offsetY
                     roomY = offsetY
-            print(roomX, roomY)
+            print(roomX, roomY, roomWidth, roomHeight)
             self.map[roomY][roomX] = 0
             for j  in range(roomHeight):
                 if(roomY + j >= offsetY and roomY + j < tilesY - offsetY):
