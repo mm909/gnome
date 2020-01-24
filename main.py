@@ -41,7 +41,7 @@ while running:
                 spriteSize = min(spriteSize + 2, 64)
                 print(spriteSize)
             if event.button == 5:
-                spriteSize = max(spriteSize - 2, 0)
+                spriteSize = max(spriteSize - 2, 2)
                 print(spriteSize)
 
 
