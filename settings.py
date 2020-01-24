@@ -1,6 +1,7 @@
 width = 1024
 height = 768
 spriteSize = 32
+zoom = spriteSize
 tilesX = int(width * 1 / spriteSize)
 tilesY = int(height * 1 / spriteSize)
 roomMax = 50
