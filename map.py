@@ -1,8 +1,10 @@
 import pygame
 from settings import *
 from random import *
+from sprite import *
 
 class Map:
+
     def __init__(self):
 
         # Import from settings file
@@ -11,8 +13,10 @@ class Map:
         self.switchWallStatus = switchWallStatus
         self.debug = debug
 
-        self.dirt = pygame.image.load("map/grey_dirt0.png").convert()
-        self.wall = pygame.image.load("map/stone2_gray0.png").convert()
+        self.dirt = Sprite("map/grey_dirt0.png")
+        self.wall = Sprite("map/stone2_gray0.png")
+        # self.dirt = pygame.image.load("map/grey_dirt0.png").convert()
+        # self.wall = pygame.image.load("map/stone2_gray0.png").convert()
 
         self.map = Map.createBackground(self)
         self.connected = []
@@ -23,9 +27,9 @@ class Map:
         for i, backgroundRow in enumerate(self.map):
             for j, tile in enumerate(backgroundRow):
                 if(tile == 0):
-                    window.blit(self.dirt, (j * 32 + self.cameraOffsetX, i * 32 + self.cameraOffsetY))
+                    self.dirt.draw(window, (j * 32 + self.cameraOffsetX, i * 32 + self.cameraOffsetY))
                 elif(tile == 1):
-                    window.blit(self.wall, (j * 32 + self.cameraOffsetX, i * 32 + self.cameraOffsetY))
+                    self.wall.draw(window, (j * 32 + self.cameraOffsetX, i * 32 + self.cameraOffsetY))
                 pass
             pass
         if self.debug:
@@ -110,7 +114,7 @@ class Map:
             roomY = randint(offsetY, tilesY- 1 - offsetY)
             roomWidth = randint(roomMinWidth, roomMaxWidth)
             roomHeight = randint(roomMinHeight, roomMaxHeight)
-            print(roomX, roomY, roomWidth, roomHeight)
+
             if roomX + roomWidth -1 >= tilesX - offsetX:
                  roomX += (tilesX - offsetX -1) - (roomX + roomWidth - 1)
                  if roomX < offsetX:
@@ -122,7 +126,20 @@ class Map:
                 if roomY < offsetY:
                     roomHeight += roomY - offsetY
                     roomY = offsetY
-            print(roomX, roomY, roomWidth, roomHeight)
+
+
+            # if roomX + roomWidth >= tilesX - offsetX:
+            #      roomX -= (tilesX - offsetX) - (roomX + roomWidth - 1)
+            #      if roomX < offsetX:
+            #          roomWidth += roomX - offsetX
+            #          roomX = offsetX
+            #
+            # if roomY + roomHeight >= tilesY -offsetY:
+            #     roomY -= (tilesY - offsetY) - (roomY + roomHeight - 1)
+            #     if roomY < offsetY:
+            #         roomHeight += roomY - offsetY
+            #         roomY = offsetY
+
             self.map[roomY][roomX] = 0
             for j  in range(roomHeight):
                 if(roomY + j >= offsetY and roomY + j < tilesY - offsetY):
