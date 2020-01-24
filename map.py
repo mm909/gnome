@@ -146,19 +146,6 @@ class Map:
                     roomHeight += roomY - offsetY
                     roomY = offsetY
 
-
-            # if roomX + roomWidth >= tilesX - offsetX:
-            #      roomX -= (tilesX - offsetX) - (roomX + roomWidth - 1)
-            #      if roomX < offsetX:
-            #          roomWidth += roomX - offsetX
-            #          roomX = offsetX
-            #
-            # if roomY + roomHeight >= tilesY -offsetY:
-            #     roomY -= (tilesY - offsetY) - (roomY + roomHeight - 1)
-            #     if roomY < offsetY:
-            #         roomHeight += roomY - offsetY
-            #         roomY = offsetY
-
             self.map[roomY][roomX] = 0
             for j  in range(roomHeight):
                 if(roomY + j >= offsetY and roomY + j < tilesY - offsetY):
