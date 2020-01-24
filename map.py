@@ -17,7 +17,7 @@ class Map:
         self.map = Map.createBackground(self)
         self.connected = []
         self.visitedBackground = []
-        Map.connectRooms(self)
+        #Map.connectRooms(self)
 
     def draw(self, window):
         for i, backgroundRow in enumerate(self.map):
@@ -110,18 +110,18 @@ class Map:
             roomY = randint(offsetY, tilesY-1 - offsetY)
             roomWidth = randint(roomMinWidth, roomMaxWidth)
             roomHeight = randint(roomMinHeight, roomMaxHeight)
-            if roomX + roomWidth > tilesX - offsetX:
-                 roomX = (tilesX - offsetX) - 1 -roomX - roomWidth
+            if roomX + roomWidth >= tilesX - offsetX:
+                 roomX -= (tilesX - offsetX) - (roomX + roomWidth - 1)
                  if roomX < offsetX:
                      roomWidth += roomX - offsetX
                      roomX = offsetX
 
-            if roomY + roomHeight > tilesY -offsetY:
-                roomY = (tilesY - offsetY) - 1 -roomY - roomHeight
-                if roomY < offsetX:
+            if roomY + roomHeight >= tilesY -offsetY:
+                roomY -= (tilesY - offsetY) - (roomY + roomHeight - 1)
+                if roomY < offsetY:
                     roomHeight += roomY - offsetY
                     roomY = offsetY
-
+            print(roomX, roomY)
             self.map[roomY][roomX] = 0
             for j  in range(roomHeight):
                 if(roomY + j >= offsetY and roomY + j < tilesY - offsetY):

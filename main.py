@@ -34,6 +34,8 @@ while running:
                 map = Map()
             if event.key == pygame.K_f:
                 map.switchWallStatus = not map.switchWallStatus
+            if event.key == pygame.K_h:
+                map.connectRooms()
 
         if pygame.mouse.get_pressed()[0]:
             map.switchWall()
