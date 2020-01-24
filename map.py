@@ -12,6 +12,7 @@ class Map:
         self.cameraOffsetY    = cameraOffsetY
         self.switchWallStatus = switchWallStatus
         self.debug = debug
+        self.spriteSize = spriteSize
 
         self.dirt = Sprite("map/grey_dirt0.png")
         self.wall = Sprite("map/stone2_gray0.png")
@@ -27,15 +28,21 @@ class Map:
         self.visitedBackground = []
         #Map.connectRooms(self)
 
+    def setSpriteSize(self, zoom):
+        self.spriteSize = zoom
+        for sprite in self.sprites:
+            sprite.resize(zoom)
+            pass
+
     def draw(self, window):
         for i, backgroundRow in enumerate(self.map):
-            y = i * 32 + self.cameraOffsetY
+            y = i * self.spriteSize + self.cameraOffsetY
             if y + spriteSize < 0:
                 continue
             elif y >= height:
                 break
             for j, tile in enumerate(backgroundRow):
-                x = j * 32 + self.cameraOffsetX
+                x = j * self.spriteSize + self.cameraOffsetX
                 if x + spriteSize <0:
                     continue
                 elif x >= width:
@@ -56,7 +63,7 @@ class Map:
             #     Map.connected(self, startX, startY)
             #     startX, startY = Map.findClusterPoint(self)
             for node in self.connected:
-                pygame.draw.rect(window, (100,255,100), (node[0] * 32 + 12 + self.cameraOffsetX, node[1] * 32 + 12 + self.cameraOffsetY, 8, 8))
+                pygame.draw.rect(window, (100,255,100), (node[0] * self.spriteSize + 12 + self.cameraOffsetX, node[1] * self.spriteSize + 12 + self.cameraOffsetY, 8, 8))
         return
 
     def getMouseCoords(self):
@@ -67,8 +74,8 @@ class Map:
 
     def switchWall(self):
         mx, my = Map.getMouseCoords(self)
-        mx = int(mx / 32)
-        my = int(my / 32)
+        mx = int(mx / self.spriteSize)
+        my = int(my / self.spriteSize)
         if my >= 0 and my < tilesY and mx >= 0 and mx < tilesX:
             self.map[my][mx] = self.switchWallStatus
         return

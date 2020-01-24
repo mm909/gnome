@@ -12,6 +12,7 @@ class GameHandler:
     def __init__(self):
         self.dt = 0
         self.previousTime = time.time()
+        self.spriteSize = spriteSize
 
         pygame.init()
 
@@ -53,11 +54,13 @@ class GameHandler:
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 4:
-                    spriteSize = min(spriteSize + 2, 64)
-                    print(spriteSize)
+                    self.spriteSize = min(self.spriteSize + 2, 56)
+                    self.map.setSpriteSize(self.spriteSize)
+                    print(self.spriteSize)
                 if event.button == 5:
-                    spriteSize = max(spriteSize - 2, 2)
-                    print(spriteSize)
+                    self.spriteSize = max(self.spriteSize - 2, 8)
+                    self.map.setSpriteSize(self.spriteSize)
+                    print(self.spriteSize)
 
             if pygame.mouse.get_pressed()[0]:
                 self.map.switchWall()
@@ -101,6 +104,6 @@ class GameHandler:
             self.CameraMovement()
 
             self.update()
-            
+
         pygame.quit()
         return

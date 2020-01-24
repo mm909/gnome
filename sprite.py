@@ -4,6 +4,8 @@ from settings import *
 class Sprite:
     def __init__(self, filename):
         self.size = spriteSize
+        self.zoom = zoom
+        self.filename = filename
         self.art = pygame.image.load(filename).convert()
 
     def draw(self, window, pos):
@@ -11,7 +13,8 @@ class Sprite:
 
     # This will be used for zoom (we only hav to resize sprites every time zoom happens)
     def resize(self, size):
-        image = pygame.Surface([size, size]).convert()
-        image.blit(self.art, (0, 0), (0, 0, size, size))
-        image.set_colorkey((0,0,0))
-        self.art = image
+        self.size = size
+        if size == 32:
+            self.art = pygame.image.load(self.filename).convert()
+        else:
+            self.art = pygame.transform.scale(self.art, (self.size, self.size))
