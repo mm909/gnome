@@ -17,4 +17,5 @@ class Sprite:
         if size == 32:
             self.art = pygame.image.load(self.filename).convert()
         else:
+            self.art = pygame.image.load(self.filename).convert() # loading everytime seems to help with image quality since we arent scaling an already scaled image again now
             self.art = pygame.transform.scale(self.art, (self.size, self.size))

@@ -43,7 +43,6 @@ class GameHandler:
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_F1:
-                    #map = Map()
                     self.map.createBackground()
                 if event.key == pygame.K_F2:
                     self.map.debugToggle()
@@ -53,14 +52,22 @@ class GameHandler:
                     self.map.connectRooms()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
+                spriteResized = False
                 if event.button == 4:
                     self.spriteSize = min(self.spriteSize + 2, 56)
-                    self.map.setSpriteSize(self.spriteSize)
-                    print(self.spriteSize)
+                    spriteResized = True
+                    #self.map.setSpriteSize(self.spriteSize)
+                    #print(self.spriteSize)
                 if event.button == 5:
                     self.spriteSize = max(self.spriteSize - 2, 8)
-                    self.map.setSpriteSize(self.spriteSize)
+                    spriteResized = True
+                    #self.map.setSpriteSize(self.spriteSize)
+                    #print(self.spriteSize)
+
+                if spriteResized == True: #just making it easier if for some reason we have to add more function calls we dont just copy and paste lines
                     print(self.spriteSize)
+                    self.map.setSpriteSize(self.spriteSize)
+
 
             if pygame.mouse.get_pressed()[0]:
                 self.map.switchWall()

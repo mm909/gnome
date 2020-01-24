@@ -37,13 +37,13 @@ class Map:
     def draw(self, window):
         for i, backgroundRow in enumerate(self.map):
             y = i * self.spriteSize + self.cameraOffsetY
-            if y + spriteSize < 0:
+            if y + self.spriteSize < 0:
                 continue
             elif y >= height:
                 break
             for j, tile in enumerate(backgroundRow):
                 x = j * self.spriteSize + self.cameraOffsetX
-                if x + spriteSize <0:
+                if x + self.spriteSize <0:
                     continue
                 elif x >= width:
                     break
