@@ -13,5 +13,5 @@ roomMinHeight = 2
 cameraOffsetX = -int(width / 2)*0
 cameraOffsetY = -int(height / 2)*0
 switchWallStatus = 0
-cameraSpeed = 5
+cameraSpeed = 15 * spriteSize # since frametime is now being calculated
 debug = 0
