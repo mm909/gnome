@@ -42,6 +42,7 @@ class Map:
         self.sprites.append(self.dirt7)
 
         self.unseenMap = []
+        self.reserved = []
         self.map = Map.createBackground(self)
         self.connected = []
         self.visitedBackground = []
@@ -109,6 +110,7 @@ class Map:
             # while startX != -1 and startY != -1:
             #     Map.connected(self, startX, startY)
             #     startX, startY = Map.findClusterPoint(self)
+
             for node in self.connected:
                 rect(
                 window,
@@ -116,6 +118,16 @@ class Map:
                 (100,255,100),
                 (node[0], node[1], self.cameraOffsetX, self.cameraOffsetY, 12, 12, 8, 8)
                 )
+
+            for i, row in enumerate(self.reserved):
+                for j, tile in enumerate(row):
+                    if(self.reserved[i][j] == 0):
+                        rect(
+                        window,
+                        self.spriteSize,
+                        (255,100,100),
+                        (j, i, self.cameraOffsetX, self.cameraOffsetY, 12, 12, 8, 8)
+                        )
                 # pygame.draw.rect(window, (100,255,100), (node[0] * self.spriteSize + 12 + self.cameraOffsetX, node[1] * self.spriteSize + 12 + self.cameraOffsetY, 8, 8))
         return
 
@@ -190,12 +202,16 @@ class Map:
         return
 
     def createBackground(self):
+        self.reserved = []
         self.map = []
         for i in range(tilesY):
             backgroundRow = []
+            backgroundRowR = []
             for j in range(tilesX):
                 backgroundRow.append(1)
+                backgroundRowR.append(1)
             self.map.append(backgroundRow)
+            self.reserved.append(backgroundRowR)
         roomNumber = randint(roomMin,roomMax)
 
         #offset = 0.03
@@ -204,27 +220,43 @@ class Map:
         for i in range(roomNumber):
             roomX = randint(offsetX, tilesX- 1 - offsetX)
             roomY = randint(offsetY, tilesY- 1 - offsetY)
+            if(self.reserved[roomY][roomX] == 0):
+                continue
             roomWidth = randint(roomMinWidth, roomMaxWidth)
             roomHeight = randint(roomMinHeight, roomMaxHeight)
 
-            if roomX + roomWidth -1 >= tilesX - offsetX:
+            if roomX + roomWidth - 1 >= tilesX - offsetX:
                  roomX += (tilesX - offsetX -1) - (roomX + roomWidth - 1)
                  if roomX < offsetX:
                      roomWidth += roomX - offsetX
                      roomX = offsetX
 
-            if roomY + roomHeight -1 >= tilesY -offsetY:
+            if roomY + roomHeight - 1 >= tilesY -offsetY:
                 roomY += (tilesY - offsetY -1) - (roomY + roomHeight - 1)
                 if roomY < offsetY:
                     roomHeight += roomY - offsetY
                     roomY = offsetY
 
-            self.map[roomY][roomX] = randint(2,9)
+            goodRoom = True
             for j  in range(roomHeight):
                 if(roomY + j >= offsetY and roomY + j < tilesY - offsetY):
                     for k in range(roomWidth):
                         if(roomX + k >= offsetX and roomX + k < tilesX - offsetX):
-                            self.map[roomY + j][roomX + k] = randint(2,9)
+                            if(self.reserved[roomY + j][roomX + k] == 0):
+                                goodRoom = False
+
+            if goodRoom:
+                for j  in range(-3, roomHeight + 3):
+                    if(roomY + j >= offsetY and roomY + j < tilesY - offsetY):
+                        for k in range(-3, roomWidth + 3):
+                            if(roomX + k >= offsetX and roomX + k < tilesX - offsetX):
+                                self.reserved[roomY + j][roomX + k] = 0
+                for j  in range(roomHeight):
+                    if(roomY + j >= offsetY and roomY + j < tilesY - offsetY):
+                        for k in range(roomWidth):
+                            if(roomX + k >= offsetX and roomX + k < tilesX - offsetX):
+                                self.map[roomY + j][roomX + k] = randint(2,9)
+
 
         self.connected = []
         self.visitedBackground = []
