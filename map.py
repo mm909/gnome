@@ -105,6 +105,16 @@ class Map:
             sprite.resize(zoom)
             pass
 
+    def getStartingPos(self):
+        tries = 500
+        while(tries > 0):
+            x = randint(0,tilesX-1)
+            y = randint(0,tilesY-1)
+            if(self.map[y][x] > 1):
+                return (x,y)
+            tries -= 1
+        return(-1,-1)
+
     def draw(self, window):
         for i, backgroundRow in enumerate(self.map):
             y = i * self.spriteSize + self.cameraOffsetY
@@ -125,6 +135,7 @@ class Map:
                     self.sprites[0].drawAlpha(window, (x, y), 235)
                 pass
             pass
+
         if self.debug:
             for node in self.connected:
                 rect(window, self.spriteSize, (100,255,100),

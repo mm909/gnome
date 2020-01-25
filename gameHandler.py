@@ -5,16 +5,18 @@ import math
 from map import *
 from random import *
 from settings import *
+from gnome import *
 
 class GameHandler:
 
 
     def __init__(self):
+        pygame.init()
         self.dt = 0
         self.previousTime = time.time()
         self.spriteSize = spriteSize
 
-        pygame.init()
+
 
         self.background_colour = (0,0,0)
 
@@ -23,6 +25,8 @@ class GameHandler:
         self.win.fill(self.background_colour)
 
         self.map = Map()
+        startPos = self.map.getStartingPos()
+        self.player = Gnome(startPos)
 
         pygame.display.flip()
 
@@ -33,6 +37,7 @@ class GameHandler:
     def update(self):
         self.win.fill(self.background_colour)
         self.map.draw(self.win)
+        self.player.draw(self.win, self.map.cameraOffsetX, self.map.cameraOffsetY, self.map.spriteSize)
         if(self.map.debug):
             pygame.draw.rect(self.win, (100,100,255), (width/2-2,height/2-2,4,4))
         pygame.display.flip()
@@ -48,6 +53,9 @@ class GameHandler:
                     self.running = False
                 if event.key == pygame.K_F1:
                     self.map.createBackground()
+                    startPos = self.map.getStartingPos()
+                    self.player = Gnome(startPos)
+                    self.player.resize(self.spriteSize)
                 if event.key == pygame.K_F2:
                     self.map.debugToggle()
                 if event.key == pygame.K_EQUALS or event.key == pygame.K_KP_PLUS:
@@ -81,6 +89,7 @@ class GameHandler:
                     # self.map.cameraOffsetY -= (height * (4/32)) / 2
                 if spriteResized == True: #just making it easier if for some reason we have to add more function calls we dont just copy and paste lines
                     self.map.setSpriteSize(self.spriteSize)
+                    self.player.resize(self.spriteSize)
 
             if pygame.mouse.get_pressed()[0]:
                 self.map.switchWall()
