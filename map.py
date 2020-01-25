@@ -112,21 +112,34 @@ class Map:
                     return startX, startY
         return startX, startY
 
-    def connected(self, x,y):
-        self.visitedBackground.append((x,y))
-        self.connected.append((x,y))
-        if x >= 0 and x < tilesX and y >= 0 and y < tilesY:
-            for i in range(-1, 2):
-                neighborX = x + i
-                if neighborX >= 0 and neighborX < tilesX:
-                    for j in range (-1, 2):
-                        if i == 0 or j == 0:   #only does dfs on non-diagonal neighbors to stop diagonal only path connections if  (abs(i) != 1 or abs(j) != 1):
-                            neighborY = y + j
-                            if neighborY >= 0 and neighborY < tilesY:
-                                if self.map[neighborY][neighborX] == 0 and not (neighborX,neighborY) in self.visitedBackground:
-                                    if not (i == 0 and j == 0):
-                                        self.connected.append((neighborX,neighborY))
-                                        Map.connected(self, neighborX, neighborY)
+    def connected(self, startX,startY):
+        queue = []
+        queue.append((startX,startY))
+
+        if not (startX,startY) in self.visitedBackground:
+            self.visitedBackground.append((startX,startY))
+        if not (startX,startY) in self.connected:
+            self.connected.append((startX,startY))
+
+        while queue:
+            node = queue.pop(0)
+            x = node[0]
+            y = node[1]
+            if x >= 0 and x < tilesX and y >= 0 and y < tilesY:
+                for i in range(-1, 2):
+                    neighborX = x + i
+                    if neighborX >= 0 and neighborX < tilesX:
+                        for j in range (-1, 2):
+                            if i == 0 or j == 0:   #only does dfs on non-diagonal neighbors to stop diagonal only path connections if  (abs(i) != 1 or abs(j) != 1):
+                                neighborY = y + j
+                                if neighborY >= 0 and neighborY < tilesY:
+                                    if self.map[neighborY][neighborX] == 0 and not (neighborX,neighborY) in self.visitedBackground:
+                                        if not (i == 0 and j == 0):
+                                            self.visitedBackground.append((neighborX,neighborY))
+                                            if not (neighborX,neighborY) in self.connected:
+                                                self.connected.append((neighborX,neighborY))
+                                            queue.append((neighborX,neighborY))
+
         return
 
     def createBackground(self):
@@ -168,7 +181,7 @@ class Map:
 
         self.connected = []
         self.visitedBackground = []
-        self.debugDFS()
+        self.debugBFS()
         return self.map
 
     def connectRooms(self):
@@ -230,9 +243,9 @@ class Map:
             self.debug = False
         else:
             self.debug = True
-            self.debugDFS()
+            self.debugBFS()
 
-    def debugDFS(self):
+    def debugBFS(self):
         if self.debug == True:
             self.connected = []
             self.visitedBackground = []
