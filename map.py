@@ -26,6 +26,10 @@ class Map:
         self.dirt5 = Sprite("map/grey_dirt5.png")
         self.dirt6 = Sprite("map/grey_dirt6.png")
         self.dirt7 = Sprite("map/grey_dirt7.png")
+        self.stone = Sprite("map/stone_dark0.png")
+        # self.cobble = Sprite("map/cobble_blood1.png")
+        self.cobble = Sprite("map/rect_gray0.png")
+        # self.cobble = Sprite("map/pebble_brown0.png")
         # self.dirt = pygame.image.load("map/grey_dirt0.png").convert()
         # self.wall = pygame.image.load("map/stone2_gray0.png").convert()
 
@@ -40,6 +44,8 @@ class Map:
         self.sprites.append(self.dirt5)
         self.sprites.append(self.dirt6)
         self.sprites.append(self.dirt7)
+        # self.sprites.append(self.stone)
+        self.sprites.append(self.cobble)
 
         self.unseenMap = []
         self.reserved = []
@@ -126,7 +132,7 @@ class Map:
                         window,
                         self.spriteSize,
                         (255,100,100),
-                        (j, i, self.cameraOffsetX, self.cameraOffsetY, 12, 12, 8, 8)
+                        (j, i, self.cameraOffsetX, self.cameraOffsetY, 14, 14, 4, 4)
                         )
                 # pygame.draw.rect(window, (100,255,100), (node[0] * self.spriteSize + 12 + self.cameraOffsetX, node[1] * self.spriteSize + 12 + self.cameraOffsetY, 8, 8))
         return
@@ -218,10 +224,13 @@ class Map:
         offsetX = 1
         offsetY = 1
         for i in range(roomNumber):
-            roomX = randint(offsetX, tilesX- 1 - offsetX)
-            roomY = randint(offsetY, tilesY- 1 - offsetY)
-            if(self.reserved[roomY][roomX] == 0):
-                continue
+            tries = 100
+            while tries > 0:
+                roomX = randint(offsetX, tilesX- 1 - offsetX)
+                roomY = randint(offsetY, tilesY- 1 - offsetY)
+                if(self.reserved[roomY][roomX] != 0):
+                    break
+                tries -= 1
             roomWidth = randint(roomMinWidth, roomMaxWidth)
             roomHeight = randint(roomMinHeight, roomMaxHeight)
 
@@ -245,6 +254,7 @@ class Map:
                             if(self.reserved[roomY + j][roomX + k] == 0):
                                 goodRoom = False
 
+            # these two loops can be combined
             if goodRoom:
                 for j  in range(-3, roomHeight + 3):
                     if(roomY + j >= offsetY and roomY + j < tilesY - offsetY):
@@ -255,7 +265,7 @@ class Map:
                     if(roomY + j >= offsetY and roomY + j < tilesY - offsetY):
                         for k in range(roomWidth):
                             if(roomX + k >= offsetX and roomX + k < tilesX - offsetX):
-                                self.map[roomY + j][roomX + k] = randint(2,9)
+                                self.map[roomY + j][roomX + k] = 10
 
 
         self.connected = []

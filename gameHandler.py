@@ -33,6 +33,8 @@ class GameHandler:
     def update(self):
         self.win.fill(self.background_colour)
         self.map.draw(self.win)
+        if(self.map.debug):
+            pygame.draw.rect(self.win, (100,100,255), (width/2,height/2,16,16))
         pygame.display.flip()
         return
 
@@ -56,9 +58,17 @@ class GameHandler:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 spriteResized = False
                 if event.button == 4:
+                    if(self.spriteSize != 64):
+                        self.map.cameraOffsetX -= 64 # - somthing extra....
+                        self.map.cameraOffsetY -= 48 #* (self.spriteSize / 32)
+                        print(self.map.cameraOffsetX, self.map.cameraOffsetY)
                     self.spriteSize = min(self.spriteSize + 4, 64)
                     spriteResized = True
                 if event.button == 5:
+                    if(self.spriteSize != 8):
+                        self.map.cameraOffsetX += 64
+                        self.map.cameraOffsetY += 48
+                        print(self.map.cameraOffsetX, self.map.cameraOffsetY)
                     self.spriteSize = max(self.spriteSize - 4, 8)
                     spriteResized = True
                     # self.map.cameraOffsetX -= (width * (4/32)) / 2
