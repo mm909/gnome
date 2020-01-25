@@ -248,6 +248,7 @@ class Map:
     def createBackground(self):
         self.reserved = []
         self.map = []
+        self.rooms = []
         for i in range(tilesY):
             backgroundRow = []
             backgroundRowR = []
