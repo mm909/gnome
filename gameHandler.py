@@ -61,6 +61,8 @@ class GameHandler:
                 if event.button == 5:
                     self.spriteSize = max(self.spriteSize - 4, 8)
                     spriteResized = True
+                    # self.map.cameraOffsetX -= (width * (4/32)) / 2
+                    # self.map.cameraOffsetY -= (height * (4/32)) / 2
                 if spriteResized == True: #just making it easier if for some reason we have to add more function calls we dont just copy and paste lines
                     self.map.setSpriteSize(self.spriteSize)
 

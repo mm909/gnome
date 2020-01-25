@@ -17,17 +17,36 @@ class Map:
 
         self.dirt = Sprite("map/grey_dirt0.png")
         self.wall = Sprite("map/stone2_gray0.png")
+        self.unseen = Sprite("map/dngn_unseen.png")
         # self.dirt = pygame.image.load("map/grey_dirt0.png").convert()
         # self.wall = pygame.image.load("map/stone2_gray0.png").convert()
 
         self.sprites = []
         self.sprites.append(self.dirt)
         self.sprites.append(self.wall)
+        self.sprites.append(self.unseen)
 
         self.map = Map.createBackground(self)
         self.connected = []
         self.visitedBackground = []
-        #Map.connectRooms(self)
+
+    def hideWalls(self):
+        for y, row in enumerate(self.map):
+            for x, tile in enumerate(row):
+                if x >= 0 and x < tilesX and y >= 0 and y < tilesY:
+                    shown = False
+                    for i in range(-1, 2):
+                        neighborX = x + i
+                        if neighborX >= 0 and neighborX < tilesX:
+                            for j in range (-1, 2):
+                                neighborY = y + j
+                                if neighborY >= 0 and neighborY < tilesY:
+                                    if self.map[neighborY][neighborX] == 0:
+                                        shown = True
+
+                    if not shown:
+                        self.map[y][x] = 2
+        return
 
     def setSpriteSize(self, zoom):
         self.spriteSize = zoom
@@ -181,7 +200,9 @@ class Map:
 
         self.connected = []
         self.visitedBackground = []
+        Map.connectRooms(self)
         self.debugBFS()
+        self.hideWalls()
         return self.map
 
     def connectRooms(self):
