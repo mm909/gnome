@@ -1,2 +1,6 @@
 
 *.pyc
+__pycache__/gameHandler.cpython-37.pyc
+__pycache__/map.cpython-37.pyc
+__pycache__/settings.cpython-37.pyc
+__pycache__/sprite.cpython-37.pyc

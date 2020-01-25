@@ -105,6 +105,16 @@ class Map:
             sprite.resize(zoom)
             pass
 
+    def getStartingPos(self):
+        tries = 500
+        while(tries > 0):
+            x = randint(0,tilesX-1)
+            y = randint(0,tilesY-1)
+            if(self.map[y][x] > 1):
+                return (x,y)
+            tries -= 1
+        return(-1,-1)
+
     def draw(self, window):
         for i, backgroundRow in enumerate(self.map):
             y = i * self.spriteSize + self.cameraOffsetY
@@ -121,39 +131,22 @@ class Map:
                 if self.unseenMap[i][j]:
                     self.sprites[tile].draw(window, (x, y))
                 else:
-                    self.sprites[0].draw(window, (x, y))
-                # if(tile == 0):
-                #     self.wall.draw(window, (j * 32 + self.cameraOffsetX, i * 32 + self.cameraOffsetY))
-                # elif(tile == 1):
-                #     self.wall.draw(window, (j * 32 + self.cameraOffsetX, i * 32 + self.cameraOffsetY))
+                    self.sprites[tile].draw(window, (x, y))
+                    self.sprites[0].drawAlpha(window, (x, y), 235)
                 pass
             pass
-        if self.debug:
-            #moved into a debugDFS function as to reduce overhead for every frame
-            # self.connected = []
-            # self.visitedBackground = []
-            # startX, startY = Map.findClusterPoint(self)
-            # while startX != -1 and startY != -1:
-            #     Map.connected(self, startX, startY)
-            #     startX, startY = Map.findClusterPoint(self)
 
+        if self.debug:
             for node in self.connected:
-                rect(
-                window,
-                self.spriteSize,
-                (100,255,100),
-                (node[0], node[1], self.cameraOffsetX, self.cameraOffsetY, 12, 12, 8, 8)
-                )
+                rect(window, self.spriteSize, (100,255,100),
+                    (node[0], node[1], self.cameraOffsetX, self.cameraOffsetY, 12, 12, 8, 8))
 
             for i, row in enumerate(self.reserved):
                 for j, tile in enumerate(row):
                     if(self.reserved[i][j] == 0):
-                        rect(
-                        window,
-                        self.spriteSize,
-                        (255,100,100),
-                        (j, i, self.cameraOffsetX, self.cameraOffsetY, 14, 14, 4, 4)
-                        )
+                        rect(window,self.spriteSize, (255,100,100),
+                            (j, i, self.cameraOffsetX, self.cameraOffsetY, 14, 14, 4, 4))
+
             # create a text suface object,
             # on which text is drawn on it.
             font = pygame.font.Font('FreeSansBold.ttf', 22)
