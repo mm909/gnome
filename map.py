@@ -34,7 +34,7 @@ class Map:
         self.cobble = Sprite("map/rect_gray0.png")
         # self.cobble = Sprite("map/pebble_brown0.png")
         # self.dirt = pygame.image.load("map/grey_dirt0.png").convert()
-        self.wall2 = Sprite("map/dngn_closed_door.png")
+        self.door = Sprite("map/dngn_closed_door.png")
         self.stairsDown = Sprite("map/stone_stairs_down.png")
 
         self.sprites = []
@@ -50,7 +50,7 @@ class Map:
         self.sprites.append(self.dirt7)
         # self.sprites.append(self.stone)
         self.sprites.append(self.cobble)
-        self.sprites.append(self.wall2)
+        self.sprites.append(self.door)
         self.sprites.append(self.stairsDown)
 
         self.unseenMap = []
@@ -239,8 +239,7 @@ class Map:
                                                 self.visitedBackground.append((neighborX,neighborY))
                                             if not (neighborX,neighborY) in self.connected:
                                                 self.connected.append((neighborX,neighborY))
-                                            if not (neighborX,neighborY) in localConnections:
-                                                localConnections.append((neighborX,neighborY))
+                                            localConnections.append((neighborX,neighborY))
                                             queue.append((neighborX,neighborY))
 
         return
@@ -351,12 +350,11 @@ class Map:
             Map.createPath(self, roomFrom, roomTo, localConnections)
             #print("back from creating path")
 
-            localConnections = []
-            roomFrom = self.getRoom(localConnections, False)
+            roomFrom = self.getRoom(localConnections, True)
 
             if roomFrom == -1:
                 break
-            Map.connected(self, roomFrom.x, roomFrom.y, localConnections)
+            # Map.connected(self, roomFrom.x, roomFrom.y, localConnections)
 
             roomTo = self.getRoom(localConnections, False)
 
