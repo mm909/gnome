@@ -25,7 +25,7 @@ class GameHandler:
         self.win.fill(self.background_colour)
 
         self.map = Map()
-        startPos = self.map.getStartingPos()
+        startPos = self.map.getOpenPos(True)
         self.player = Gnome(startPos)
 
         pygame.display.flip()
@@ -53,7 +53,7 @@ class GameHandler:
                     self.running = False
                 if event.key == pygame.K_F1:
                     self.map.createBackground()
-                    startPos = self.map.getStartingPos()
+                    startPos = self.map.getOpenPos(True)
                     self.player = Gnome(startPos)
                     self.player.resize(self.spriteSize)
                 if event.key == pygame.K_F2:

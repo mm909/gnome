@@ -35,6 +35,7 @@ class Map:
         # self.cobble = Sprite("map/pebble_brown0.png")
         # self.dirt = pygame.image.load("map/grey_dirt0.png").convert()
         self.wall2 = Sprite("map/stone2_gray0.png")
+        self.stairsDown = Sprite("map/stone_stairs_down.png")
 
         self.sprites = []
         self.sprites.append(self.unseen)
@@ -50,6 +51,7 @@ class Map:
         # self.sprites.append(self.stone)
         self.sprites.append(self.cobble)
         self.sprites.append(self.wall2)
+        self.sprites.append(self.stairsDown)
 
         self.unseenMap = []
         self.reserved = []
@@ -57,6 +59,10 @@ class Map:
         self.map = Map.createBackground(self)
         self.connected = []
         self.visitedBackground = []
+
+    def placeExit(self):
+        pos = Map.getOpenPos(self, True)
+        self.map[pos[1]][pos[0]] = 12
 
     def hideWalls(self):
         self.unseenMap = []
@@ -105,13 +111,18 @@ class Map:
             sprite.resize(zoom)
             pass
 
-    def getStartingPos(self):
+    def getOpenPos(self, inroom):
         tries = 500
         while(tries > 0):
             x = randint(0,tilesX-1)
             y = randint(0,tilesY-1)
             if(self.map[y][x] > 1):
-                return (x,y)
+                if inroom:
+                    for room in self.rooms:
+                        if(room.isInside(x,y)):
+                            return(x,y)
+                else:
+                    return (x,y)
             tries -= 1
         return(-1,-1)
 
@@ -317,6 +328,7 @@ class Map:
         Map.connectRooms(self)
         self.debugBFS()
         self.hideWalls()
+        self.placeExit()
         # print(self.rooms)
         return self.map
 
