@@ -117,9 +117,9 @@ class Map:
                 elif x >= width:
                     break
                 if self.unseenMap[i][j]:
-                    self.sprites[tile].draw(window, (x, y))
+                    self.sprites[tile].draw(window, (x, y), 128)
                 else:
-                    self.sprites[0].draw(window, (x, y))
+                    self.sprites[0].draw(window, (x, y), 255)
                 # if(tile == 0):
                 #     self.wall.draw(window, (j * 32 + self.cameraOffsetX, i * 32 + self.cameraOffsetY))
                 # elif(tile == 1):
@@ -159,7 +159,7 @@ class Map:
             textRect = text.get_rect()
             # textRect.center = (0,0)
             window.blit(text, textRect)
-            self.sprites[self.placingSprite].draw(window, (85, 0))
+            self.sprites[self.placingSprite].draw(window, (85, 0), 255)
                 # pygame.draw.rect(window, (100,255,100), (node[0] * self.spriteSize + 12 + self.cameraOffsetX, node[1] * self.spriteSize + 12 + self.cameraOffsetY, 8, 8))
         return
 
