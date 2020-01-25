@@ -21,3 +21,9 @@ class Room:
             print("Door Not Added: ", self.x, self.y, self.width, self.height, doorX, doorY, )
             return False
         return
+
+    def isInside(self,x,y):
+        if x >= self.x and x < self.x + self.width:
+            if y >= self.y and y < self.y + self.height:
+                return True
+        return False

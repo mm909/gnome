@@ -34,7 +34,7 @@ class GameHandler:
         self.win.fill(self.background_colour)
         self.map.draw(self.win)
         if(self.map.debug):
-            pygame.draw.rect(self.win, (100,100,255), (width/2,height/2,16,16))
+            pygame.draw.rect(self.win, (100,100,255), (width/2-2,height/2-2,4,4))
         pygame.display.flip()
         return
 
@@ -50,8 +50,14 @@ class GameHandler:
                     self.map.createBackground()
                 if event.key == pygame.K_F2:
                     self.map.debugToggle()
-                if event.key == pygame.K_f:
-                    self.map.switchWallStatus = not map.switchWallStatus
+                if event.key == pygame.K_PLUS or event.key == pygame.K_KP_PLUS:
+                    self.map.placingSprite += 1
+                    if self.map.placingSprite >= len(self.map.sprites):
+                        self.map.placingSprite = len(self.map.sprites) - 1
+                if event.key == pygame.K_MINUS or event.key == pygame.K_KP_MINUS:
+                    self.map.placingSprite -= 1
+                    if self.map.placingSprite < 0:
+                        self.map.placingSprite = 0
                 if event.key == pygame.K_h:
                     self.map.connectRooms()
 
@@ -106,10 +112,10 @@ class GameHandler:
         self.map.cameraOffsetX += cameraVel[0]
         self.map.cameraOffsetY += cameraVel[1]
 
-        if cameraVel[0] != 0:
-            print(self.map.cameraOffsetX)
-        if cameraVel[1] != 0:
-            print(self.map.cameraOffsetY)
+        # if cameraVel[0] != 0:
+        #     print(self.map.cameraOffsetX)
+        # if cameraVel[1] != 0:
+        #     print(self.map.cameraOffsetY)
         return
 
     def gameLoop(self):

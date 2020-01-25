@@ -15,3 +15,4 @@ cameraOffsetY = -int(height / 2)*0
 switchWallStatus = 0
 cameraSpeed = 15 * spriteSize # since frametime is now being calculated
 debug = 0
+placingSprite = 2
