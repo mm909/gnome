@@ -41,11 +41,19 @@ class Map:
         self.sprites.append(self.dirt6)
         self.sprites.append(self.dirt7)
 
+        self.unseenMap = []
         self.map = Map.createBackground(self)
         self.connected = []
         self.visitedBackground = []
 
     def hideWalls(self):
+        self.unseenMap = []
+        for i in range(tilesY):
+            row = []
+            for j in range(tilesX):
+                row.append(1)
+            self.unseenMap.append(row)
+
         for y, row in enumerate(self.map):
             for x, tile in enumerate(row):
                 if x >= 0 and x < tilesX and y >= 0 and y < tilesY:
@@ -60,7 +68,8 @@ class Map:
                                         shown = True
 
                     if not shown:
-                        self.map[y][x] = 0
+                        # self.unseenMap.append((x,y))
+                        self.unseenMap[y][x] = 0
         return
 
     def setSpriteSize(self, zoom):
@@ -82,7 +91,10 @@ class Map:
                     continue
                 elif x >= width:
                     break
-                self.sprites[tile].draw(window, (x, y))
+                if self.unseenMap[i][j]:
+                    self.sprites[tile].draw(window, (x, y))
+                else:
+                    self.sprites[0].draw(window, (x, y))
                 # if(tile == 0):
                 #     self.wall.draw(window, (j * 32 + self.cameraOffsetX, i * 32 + self.cameraOffsetY))
                 # elif(tile == 1):
@@ -119,6 +131,7 @@ class Map:
         my = int(my / self.spriteSize)
         if my >= 0 and my < tilesY and mx >= 0 and mx < tilesX:
             self.map[my][mx] = randint(2,9)
+            self.hideWalls()
         return
 
     def getStartPoint(self):
