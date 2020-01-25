@@ -209,7 +209,7 @@ class Map:
                     return startX, startY
         return startX, startY
 
-    def connected(self, startX,startY):
+    def connected(self, startX, startY, localConnections = []):
         queue = []
         queue.append((startX,startY))
 
@@ -217,6 +217,9 @@ class Map:
             self.visitedBackground.append((startX,startY))
         if not (startX,startY) in self.connected:
             self.connected.append((startX,startY))
+        if not (startX, startY) in localConnections:
+            localConnections.append((startX, startY))
+
 
         while queue:
             node = queue.pop(0)
@@ -230,11 +233,14 @@ class Map:
                             if i == 0 or j == 0:   #only does dfs on non-diagonal neighbors to stop diagonal only path connections if  (abs(i) != 1 or abs(j) != 1):
                                 neighborY = y + j
                                 if neighborY >= 0 and neighborY < tilesY:
-                                    if self.map[neighborY][neighborX] > 1 and not (neighborX,neighborY) in self.visitedBackground:
+                                    if self.map[neighborY][neighborX] > 1 and not (neighborX,neighborY) in localConnections:
                                         if not (i == 0 and j == 0):
-                                            self.visitedBackground.append((neighborX,neighborY))
+                                            if not (neighborX,neighborY) in self.visitedBackground:
+                                                self.visitedBackground.append((neighborX,neighborY))
                                             if not (neighborX,neighborY) in self.connected:
                                                 self.connected.append((neighborX,neighborY))
+                                            if not (neighborX,neighborY) in localConnections:
+                                                localConnections.append((neighborX,neighborY))
                                             queue.append((neighborX,neighborY))
 
         return
@@ -334,18 +340,35 @@ class Map:
 
     def connectRooms(self):
         self.visitedBackground = []
-        startX, startY = Map.getStartPoint(self)
-        Map.connected(self, startX, startY)
-        endX, endY = Map.findClusterPoint(self)
-        while endX != -1 and endY != -1:
+        localConnections = []
+        roomFrom = self.getRoom(localConnections, False)
+        Map.connected(self, roomFrom.x, roomFrom.y, localConnections)
+
+        roomTo = self.getRoom(localConnections, False)
+        while roomTo != -1:
             #connected(endX, endY)
-            Map.createPath(self, startX, startY, endX, endY)
-            endX, endY = Map.findClusterPoint(self)
+            Map.createPath(self, roomFrom, roomTo, localConnections)
+            #print("back from creating path")
+
+            localConnections = []
+            roomFrom = self.getRoom(localConnections, False)
+
+            if roomFrom == -1:
+                break
+            Map.connected(self, roomFrom.x, roomFrom.y, localConnections)
+
+            roomTo = self.getRoom(localConnections, False)
+
         return
 
-    def createPath(self, startX, startY, endX, endY):
+    def createPath(self, roomFrom, roomTo, localConnections = []):
         dx = 0
         dy = 0
+
+        startX = roomFrom.x
+        startY = roomFrom.y
+        endX = roomTo.x
+        endY = roomTo.y
 
         slopeX = abs(startX - endX)
         slopeY = abs(startY - endY)
@@ -364,14 +387,14 @@ class Map:
         moveX = randint(0,1)
         currX = startX
         currY = startY
-        while not (endX, endY) in self.visitedBackground:
+        while not (endX, endY) in localConnections:
             #visitedBackground = []
             if  moveX == True:
                 if slopeX >0:
                     currX = currX + dx
                     self.map[currY][currX] = randint(2,9)
                     slopeX = slopeX - 1
-                    Map.connected(self, currX, currY)
+                    Map.connected(self, currX, currY, localConnections)
                 else:
                     moveX = False
 
@@ -380,7 +403,7 @@ class Map:
                     currY = currY + dy
                     self.map[currY][currX] = randint(2,9)
                     slopeY = slopeY - 1
-                    Map.connected(self, currX, currY)
+                    Map.connected(self, currX, currY, localConnections)
                 else:
                     moveX = True
 
@@ -403,3 +426,31 @@ class Map:
                 startX, startY = Map.findClusterPoint(self)
 
         return
+
+    def getRoom(self, localConnections, connected = True):
+        roomFound = False
+        roomIndex = -1
+
+
+        for room in self.rooms:
+            if connected == True and (room.x, room.y) in localConnections:
+                #print("room found in connected equal True")
+                roomFound = True
+                break
+            elif connected == False and not (room.x, room.y) in localConnections:
+                roomFound = True
+                break
+        if roomFound == False:
+            #print("for loop found no suitable room for conditions")
+            return -1
+
+        roomFound = False
+        while roomFound == False:
+            roomIndex = randint(0, len(self.rooms) - 1)
+            if connected == True and (self.rooms[roomIndex].x, self.rooms[roomIndex].y) in localConnections:
+                roomFound = True
+            elif connected == False and not (self.rooms[roomIndex].x, self.rooms[roomIndex].y) in localConnections:
+                roomFound = True
+
+        #print("returning room")
+        return self.rooms[roomIndex]
