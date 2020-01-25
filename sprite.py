@@ -11,8 +11,11 @@ class Sprite:
 
         # self.addons = []
 
-    def draw(self, window, pos, alpha):
-        # window.blit(self.art, pos)
+    def draw(self, window, pos):
+        window.blit(self.art, pos)
+        return
+
+    def drawAlpha(self, window, pos, alpha):
         Sprite.blit_alpha(window, self.art, pos, alpha)
 
     def resize(self, size):

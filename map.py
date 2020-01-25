@@ -119,9 +119,10 @@ class Map:
                 elif x >= width:
                     break
                 if self.unseenMap[i][j]:
-                    self.sprites[tile].draw(window, (x, y), 128)
+                    self.sprites[tile].draw(window, (x, y))
                 else:
-                    self.sprites[0].draw(window, (x, y), 255)
+                    self.sprites[tile].draw(window, (x, y))
+                    self.sprites[0].drawAlpha(window, (x, y), 235)
                 # if(tile == 0):
                 #     self.wall.draw(window, (j * 32 + self.cameraOffsetX, i * 32 + self.cameraOffsetY))
                 # elif(tile == 1):

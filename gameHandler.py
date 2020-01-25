@@ -50,7 +50,7 @@ class GameHandler:
                     self.map.createBackground()
                 if event.key == pygame.K_F2:
                     self.map.debugToggle()
-                if event.key == pygame.K_PLUS or event.key == pygame.K_KP_PLUS:
+                if event.key == pygame.K_EQUALS or event.key == pygame.K_KP_PLUS:
                     self.map.placingSprite += 1
                     if self.map.placingSprite >= len(self.map.sprites):
                         self.map.placingSprite = len(self.map.sprites) - 1
