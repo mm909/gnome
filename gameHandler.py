@@ -58,17 +58,17 @@ class GameHandler:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 spriteResized = False
                 if event.button == 4:
-                    if(self.spriteSize != 64):
-                        self.map.cameraOffsetX -= 64 # - somthing extra....
-                        self.map.cameraOffsetY -= 48 #* (self.spriteSize / 32)
-                        print(self.map.cameraOffsetX, self.map.cameraOffsetY)
+                    # if(self.spriteSize != 64):
+                    #     self.map.cameraOffsetX -= 64 # - somthing extra....
+                    #     self.map.cameraOffsetY -= 48 #* (self.spriteSize / 32)
+                    #     print(self.map.cameraOffsetX, self.map.cameraOffsetY)
                     self.spriteSize = min(self.spriteSize + 4, 64)
                     spriteResized = True
                 if event.button == 5:
-                    if(self.spriteSize != 8):
-                        self.map.cameraOffsetX += 64
-                        self.map.cameraOffsetY += 48
-                        print(self.map.cameraOffsetX, self.map.cameraOffsetY)
+                    # if(self.spriteSize != 8):
+                    #     self.map.cameraOffsetX += 64 # I feel like map should handle the cameraOffset stuff in its sprite resize function
+                    #     self.map.cameraOffsetY += 48
+                    #     print(self.map.cameraOffsetX, self.map.cameraOffsetY)
                     self.spriteSize = max(self.spriteSize - 4, 8)
                     spriteResized = True
                     # self.map.cameraOffsetX -= (width * (4/32)) / 2
@@ -105,6 +105,11 @@ class GameHandler:
 
         self.map.cameraOffsetX += cameraVel[0]
         self.map.cameraOffsetY += cameraVel[1]
+
+        if cameraVel[0] != 0:
+            print(self.map.cameraOffsetX)
+        if cameraVel[1] != 0:
+            print(self.map.cameraOffsetY)
         return
 
     def gameLoop(self):

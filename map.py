@@ -3,6 +3,7 @@ from settings import *
 from random import *
 from sprite import *
 from draw import *
+from room import *
 
 class Map:
 
@@ -49,6 +50,7 @@ class Map:
 
         self.unseenMap = []
         self.reserved = []
+        self.rooms = []
         self.map = Map.createBackground(self)
         self.connected = []
         self.visitedBackground = []
@@ -80,7 +82,22 @@ class Map:
         return
 
     def setSpriteSize(self, zoom):
+        mx, my  = self.getMouseCoords()
+        oldZoom = self.spriteSize
         self.spriteSize = zoom
+        self.cameraOffsetX = self.cameraOffsetX * zoom/oldZoom
+        self.cameraOffsetY = self.cameraOffsetY * zoom/oldZoom
+        mx = mx * zoom/oldZoom
+        my = my * zoom/oldZoom
+
+        nmx, nmy = self.getMouseCoords()
+
+        mxOffset = nmx - mx
+        myOffset = nmy - my
+
+        self.cameraOffsetX += mxOffset
+        self.cameraOffsetY += myOffset
+
         for sprite in self.sprites:
             sprite.resize(zoom)
             pass
@@ -256,6 +273,7 @@ class Map:
 
             # these two loops can be combined
             if goodRoom:
+                self.rooms.append(Room(roomX, roomY, roomWidth, roomHeight))
                 for j  in range(-3, roomHeight + 3):
                     if(roomY + j >= offsetY and roomY + j < tilesY - offsetY):
                         for k in range(-3, roomWidth + 3):
@@ -273,6 +291,7 @@ class Map:
         Map.connectRooms(self)
         self.debugBFS()
         self.hideWalls()
+        print(self.rooms)
         return self.map
 
     def connectRooms(self):
