@@ -1,2 +1,3 @@
-We need to make a class for map generation
-I think this can be done once it's all finished but I realize that we will need one pretty soon
+map
+p5js function insot sprites
+rooms not overlap

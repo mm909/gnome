@@ -2,6 +2,7 @@ import pygame
 from settings import *
 from random import *
 from sprite import *
+from draw import *
 
 class Map:
 
@@ -63,7 +64,13 @@ class Map:
             #     Map.connected(self, startX, startY)
             #     startX, startY = Map.findClusterPoint(self)
             for node in self.connected:
-                pygame.draw.rect(window, (100,255,100), (node[0] * self.spriteSize + 12 + self.cameraOffsetX, node[1] * self.spriteSize + 12 + self.cameraOffsetY, 8, 8))
+                rect(
+                window,
+                self.spriteSize,
+                (100,255,100),
+                (node[0], node[1], self.cameraOffsetX, self.cameraOffsetY, 12, 12, 8, 8)
+                )
+                # pygame.draw.rect(window, (100,255,100), (node[0] * self.spriteSize + 12 + self.cameraOffsetX, node[1] * self.spriteSize + 12 + self.cameraOffsetY, 8, 8))
         return
 
     def getMouseCoords(self):
@@ -119,7 +126,6 @@ class Map:
                                 if self.map[neighborY][neighborX] == 0 and not (neighborX,neighborY) in self.visitedBackground:
                                     if not (i == 0 and j == 0):
                                         self.connected.append((neighborX,neighborY))
-                                        # pygame.draw.rect(win, (100,255,100), (neighborX * 32 + 12 + cameraOffsetX, neighborY * 32 + 12 + cameraOffsetY, 8, 8))
                                         Map.connected(self, neighborX, neighborY)
         return
 

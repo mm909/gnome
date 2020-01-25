@@ -42,6 +42,8 @@ class GameHandler:
                 self.running = False
 
             if event.type == pygame.KEYUP:
+                if event.key == pygame.K_ESCAPE:
+                    self.running = False
                 if event.key == pygame.K_F1:
                     self.map.createBackground()
                 if event.key == pygame.K_F2:
@@ -54,13 +56,12 @@ class GameHandler:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 spriteResized = False
                 if event.button == 4:
-                    self.spriteSize = min(self.spriteSize + 2, 64)
+                    self.spriteSize = min(self.spriteSize + 4, 64)
                     spriteResized = True
                 if event.button == 5:
-                    self.spriteSize = max(self.spriteSize - 2, 2)
+                    self.spriteSize = max(self.spriteSize - 4, 8)
                     spriteResized = True
                 if spriteResized == True: #just making it easier if for some reason we have to add more function calls we dont just copy and paste lines
-                    print(self.spriteSize)
                     self.map.setSpriteSize(self.spriteSize)
 
             if pygame.mouse.get_pressed()[0]:
