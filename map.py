@@ -15,6 +15,7 @@ class Map:
         self.switchWallStatus = switchWallStatus
         self.debug = debug
         self.spriteSize = spriteSize
+        self.placingSprite = placingSprite
 
         self.unseen = Sprite("map/dngn_unseen.png")
         # self.wall = Sprite("map/stone2_gray0.png")
@@ -151,6 +152,14 @@ class Map:
                         (255,100,100),
                         (j, i, self.cameraOffsetX, self.cameraOffsetY, 14, 14, 4, 4)
                         )
+            # create a text suface object,
+            # on which text is drawn on it.
+            font = pygame.font.Font('FreeSansBold.ttf', 22)
+            text = font.render('Placing:' , True, (0,0,0), (151,151,151))
+            textRect = text.get_rect()
+            # textRect.center = (0,0)
+            window.blit(text, textRect)
+            self.sprites[self.placingSprite].draw(window, (85, 0))
                 # pygame.draw.rect(window, (100,255,100), (node[0] * self.spriteSize + 12 + self.cameraOffsetX, node[1] * self.spriteSize + 12 + self.cameraOffsetY, 8, 8))
         return
 
@@ -165,7 +174,7 @@ class Map:
         mx = int(mx / self.spriteSize)
         my = int(my / self.spriteSize)
         if my >= 0 and my < tilesY and mx >= 0 and mx < tilesX:
-            self.map[my][mx] = randint(2,9)
+            self.map[my][mx] = self.placingSprite
             self.hideWalls()
         return
 
