@@ -15,16 +15,31 @@ class Map:
         self.debug = debug
         self.spriteSize = spriteSize
 
-        self.dirt = Sprite("map/grey_dirt0.png")
-        self.wall = Sprite("map/stone2_gray0.png")
         self.unseen = Sprite("map/dngn_unseen.png")
+        # self.wall = Sprite("map/stone2_gray0.png")
+        self.wall = Sprite("map/stone_gray0.png")
+        self.dirt0 = Sprite("map/grey_dirt0.png")
+        self.dirt1 = Sprite("map/grey_dirt1.png")
+        self.dirt2 = Sprite("map/grey_dirt2.png")
+        self.dirt3 = Sprite("map/grey_dirt3.png")
+        self.dirt4 = Sprite("map/grey_dirt4.png")
+        self.dirt5 = Sprite("map/grey_dirt5.png")
+        self.dirt6 = Sprite("map/grey_dirt6.png")
+        self.dirt7 = Sprite("map/grey_dirt7.png")
         # self.dirt = pygame.image.load("map/grey_dirt0.png").convert()
         # self.wall = pygame.image.load("map/stone2_gray0.png").convert()
 
         self.sprites = []
-        self.sprites.append(self.dirt)
-        self.sprites.append(self.wall)
         self.sprites.append(self.unseen)
+        self.sprites.append(self.wall)
+        self.sprites.append(self.dirt0)
+        self.sprites.append(self.dirt1)
+        self.sprites.append(self.dirt2)
+        self.sprites.append(self.dirt3)
+        self.sprites.append(self.dirt4)
+        self.sprites.append(self.dirt5)
+        self.sprites.append(self.dirt6)
+        self.sprites.append(self.dirt7)
 
         self.map = Map.createBackground(self)
         self.connected = []
@@ -41,11 +56,11 @@ class Map:
                             for j in range (-1, 2):
                                 neighborY = y + j
                                 if neighborY >= 0 and neighborY < tilesY:
-                                    if self.map[neighborY][neighborX] == 0:
+                                    if self.map[neighborY][neighborX] > 1:
                                         shown = True
 
                     if not shown:
-                        self.map[y][x] = 2
+                        self.map[y][x] = 0
         return
 
     def setSpriteSize(self, zoom):
@@ -103,7 +118,7 @@ class Map:
         mx = int(mx / self.spriteSize)
         my = int(my / self.spriteSize)
         if my >= 0 and my < tilesY and mx >= 0 and mx < tilesX:
-            self.map[my][mx] = self.switchWallStatus
+            self.map[my][mx] = randint(2,9)
         return
 
     def getStartPoint(self):
@@ -111,7 +126,7 @@ class Map:
         startY = -1
         for i, backgroundRow in enumerate(self.map):
             for j, tile in enumerate(backgroundRow):
-                if self.map[i][j] == 0:
+                if self.map[i][j] > 1:
                     startX = j
                     startY = i
                     self.connected.append((j,i))
@@ -124,7 +139,7 @@ class Map:
         startY = -1
         for i, backgroundRow in enumerate(self.map):
             for j, tile in enumerate(backgroundRow):
-                if self.map[i][j] == 0 and not (j , i) in self.visitedBackground:
+                if self.map[i][j] > 1 and not (j , i) in self.visitedBackground:
                     startX = j
                     startY = i
                     # pygame.draw.rect(win, (255,255,255), (j * 32 + 12 + cameraOffsetX, i * 32 + 12 + cameraOffsetY, 8, 8))
@@ -152,7 +167,7 @@ class Map:
                             if i == 0 or j == 0:   #only does dfs on non-diagonal neighbors to stop diagonal only path connections if  (abs(i) != 1 or abs(j) != 1):
                                 neighborY = y + j
                                 if neighborY >= 0 and neighborY < tilesY:
-                                    if self.map[neighborY][neighborX] == 0 and not (neighborX,neighborY) in self.visitedBackground:
+                                    if self.map[neighborY][neighborX] > 1 and not (neighborX,neighborY) in self.visitedBackground:
                                         if not (i == 0 and j == 0):
                                             self.visitedBackground.append((neighborX,neighborY))
                                             if not (neighborX,neighborY) in self.connected:
@@ -191,12 +206,12 @@ class Map:
                     roomHeight += roomY - offsetY
                     roomY = offsetY
 
-            self.map[roomY][roomX] = 0
+            self.map[roomY][roomX] = randint(2,9)
             for j  in range(roomHeight):
                 if(roomY + j >= offsetY and roomY + j < tilesY - offsetY):
                     for k in range(roomWidth):
                         if(roomX + k >= offsetX and roomX + k < tilesX - offsetX):
-                            self.map[roomY + j][roomX + k] = 0
+                            self.map[roomY + j][roomX + k] = randint(2,9)
 
         self.connected = []
         self.visitedBackground = []
@@ -242,7 +257,7 @@ class Map:
             if  moveX == True:
                 if slopeX >0:
                     currX = currX + dx
-                    self.map[currY][currX] = 0
+                    self.map[currY][currX] = randint(2,9)
                     slopeX = slopeX - 1
                     Map.connected(self, currX, currY)
                 else:
@@ -251,7 +266,7 @@ class Map:
             elif moveX == False:
                 if slopeY > 0:
                     currY = currY + dy
-                    self.map[currY][currX] = 0
+                    self.map[currY][currX] = randint(2,9)
                     slopeY = slopeY - 1
                     Map.connected(self, currX, currY)
                 else:
