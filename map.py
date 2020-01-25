@@ -34,7 +34,7 @@ class Map:
         self.cobble = Sprite("map/rect_gray0.png")
         # self.cobble = Sprite("map/pebble_brown0.png")
         # self.dirt = pygame.image.load("map/grey_dirt0.png").convert()
-        self.wall2 = Sprite("map/stone2_gray0.png")
+        self.wall2 = Sprite("map/dngn_closed_door.png")
         self.stairsDown = Sprite("map/stone_stairs_down.png")
 
         self.sprites = []
