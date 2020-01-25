@@ -1,4 +1,5 @@
 import pygame
+from gameHandler import *
 from settings import *
 from random import *
 from sprite import *
@@ -33,7 +34,7 @@ class Map:
         self.cobble = Sprite("map/rect_gray0.png")
         # self.cobble = Sprite("map/pebble_brown0.png")
         # self.dirt = pygame.image.load("map/grey_dirt0.png").convert()
-        # self.wall = pygame.image.load("map/stone2_gray0.png").convert()
+        self.wall2 = Sprite("map/stone2_gray0.png")
 
         self.sprites = []
         self.sprites.append(self.unseen)
@@ -48,6 +49,7 @@ class Map:
         self.sprites.append(self.dirt7)
         # self.sprites.append(self.stone)
         self.sprites.append(self.cobble)
+        self.sprites.append(self.wall2)
 
         self.unseenMap = []
         self.reserved = []
@@ -84,12 +86,12 @@ class Map:
 
     def setSpriteSize(self, zoom):
         mx, my  = self.getMouseCoords()
-        oldZoom = self.spriteSize
+        zoomScale = zoom / self.spriteSize
         self.spriteSize = zoom
-        self.cameraOffsetX = self.cameraOffsetX * zoom/oldZoom
-        self.cameraOffsetY = self.cameraOffsetY * zoom/oldZoom
-        mx = mx * zoom/oldZoom
-        my = my * zoom/oldZoom
+        self.cameraOffsetX = self.cameraOffsetX * zoomScale
+        self.cameraOffsetY = self.cameraOffsetY * zoomScale
+        mx = mx * zoomScale
+        my = my * zoomScale
 
         nmx, nmy = self.getMouseCoords()
 
@@ -283,6 +285,28 @@ class Map:
             # these two loops can be combined
             if goodRoom:
                 self.rooms.append(Room(roomX, roomY, roomWidth, roomHeight))
+                roomsIndex = len(self.rooms) - 1
+
+                doorXoffset = -1
+                doorYoffset = randint(0, roomHeight - 1)
+                self.rooms[roomsIndex].addDoor(roomX +doorXoffset, roomY + doorYoffset)
+                self.map[roomY + doorYoffset][roomX + doorXoffset] = 11
+
+                doorXoffset = roomWidth
+                doorYoffset = randint(0, roomHeight - 1)
+                self.rooms[roomsIndex].addDoor(roomX +doorXoffset, roomY + doorYoffset)
+                self.map[roomY + doorYoffset][roomX + doorXoffset] = 11
+
+                doorYoffset = -1
+                doorXoffset = randint(0, roomWidth - 1)
+                self.rooms[roomsIndex].addDoor(roomX +doorXoffset, roomY + doorYoffset)
+                self.map[roomY + doorYoffset][roomX + doorXoffset] = 11
+
+                doorYoffset = roomHeight
+                doorXoffset = randint(0, roomWidth - 1)
+                self.rooms[roomsIndex].addDoor(roomX +doorXoffset, roomY + doorYoffset)
+                self.map[roomY + doorYoffset][roomX + doorXoffset] = 11
+
                 for j  in range(-3, roomHeight + 3):
                     if(roomY + j >= offsetY and roomY + j < tilesY - offsetY):
                         for k in range(-3, roomWidth + 3):
