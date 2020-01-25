@@ -9,4 +9,10 @@ class Room:
         self.width = w
         self.height = h
 
-        return 
+        return
+
+    def isInside(x,y):
+        if x >= self.x and x < self.x + self.width:
+            if y >= self.y and y < self.y + self.height:
+                return True
+        return False

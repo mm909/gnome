@@ -34,7 +34,7 @@ class GameHandler:
         self.win.fill(self.background_colour)
         self.map.draw(self.win)
         if(self.map.debug):
-            pygame.draw.rect(self.win, (100,100,255), (width/2,height/2,16,16))
+            pygame.draw.rect(self.win, (100,100,255), (width/2-2,height/2-2,4,4))
         pygame.display.flip()
         return
 
@@ -106,10 +106,10 @@ class GameHandler:
         self.map.cameraOffsetX += cameraVel[0]
         self.map.cameraOffsetY += cameraVel[1]
 
-        if cameraVel[0] != 0:
-            print(self.map.cameraOffsetX)
-        if cameraVel[1] != 0:
-            print(self.map.cameraOffsetY)
+        # if cameraVel[0] != 0:
+        #     print(self.map.cameraOffsetX)
+        # if cameraVel[1] != 0:
+        #     print(self.map.cameraOffsetY)
         return
 
     def gameLoop(self):

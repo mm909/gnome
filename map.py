@@ -291,7 +291,7 @@ class Map:
         Map.connectRooms(self)
         self.debugBFS()
         self.hideWalls()
-        print(self.rooms)
+        # print(self.rooms)
         return self.map
 
     def connectRooms(self):

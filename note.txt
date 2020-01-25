@@ -1,3 +1,0 @@
-map
-p5js function insot sprites
-rooms not overlap
