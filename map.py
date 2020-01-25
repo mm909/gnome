@@ -123,38 +123,19 @@ class Map:
                 else:
                     self.sprites[tile].draw(window, (x, y))
                     self.sprites[0].drawAlpha(window, (x, y), 235)
-                # if(tile == 0):
-                #     self.wall.draw(window, (j * 32 + self.cameraOffsetX, i * 32 + self.cameraOffsetY))
-                # elif(tile == 1):
-                #     self.wall.draw(window, (j * 32 + self.cameraOffsetX, i * 32 + self.cameraOffsetY))
                 pass
             pass
         if self.debug:
-            #moved into a debugDFS function as to reduce overhead for every frame
-            # self.connected = []
-            # self.visitedBackground = []
-            # startX, startY = Map.findClusterPoint(self)
-            # while startX != -1 and startY != -1:
-            #     Map.connected(self, startX, startY)
-            #     startX, startY = Map.findClusterPoint(self)
-
             for node in self.connected:
-                rect(
-                window,
-                self.spriteSize,
-                (100,255,100),
-                (node[0], node[1], self.cameraOffsetX, self.cameraOffsetY, 12, 12, 8, 8)
-                )
+                rect(window, self.spriteSize, (100,255,100),
+                    (node[0], node[1], self.cameraOffsetX, self.cameraOffsetY, 12, 12, 8, 8))
 
             for i, row in enumerate(self.reserved):
                 for j, tile in enumerate(row):
                     if(self.reserved[i][j] == 0):
-                        rect(
-                        window,
-                        self.spriteSize,
-                        (255,100,100),
-                        (j, i, self.cameraOffsetX, self.cameraOffsetY, 14, 14, 4, 4)
-                        )
+                        rect(window,self.spriteSize, (255,100,100),
+                            (j, i, self.cameraOffsetX, self.cameraOffsetY, 14, 14, 4, 4))
+
             # create a text suface object,
             # on which text is drawn on it.
             font = pygame.font.Font('FreeSansBold.ttf', 22)
@@ -162,7 +143,7 @@ class Map:
             textRect = text.get_rect()
             # textRect.center = (0,0)
             window.blit(text, textRect)
-            self.sprites[self.placingSprite].draw(window, (85, 0), 255)
+            self.sprites[self.placingSprite].draw(window, (85, 0))
                 # pygame.draw.rect(window, (100,255,100), (node[0] * self.spriteSize + 12 + self.cameraOffsetX, node[1] * self.spriteSize + 12 + self.cameraOffsetY, 8, 8))
         return
 
