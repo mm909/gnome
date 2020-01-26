@@ -371,14 +371,14 @@ class Map:
 
         door = roomFrom.getRandomDoor()
         if door[0] < 0 or door[0] >= tilesX or door[1] < 0 or door[1] >= tilesY:
-            print("FROM: its negative baby", door[0], door[1], tilesX, tilesY)
+            print("FROM:  broken coordinates", "doorX: ", door[0], "doorY:", door[1], "tilesX: ", tilesX, "tilesY:", tilesY)
         startX = door[0]
         startY = door[1]
         self.map[startY][startX] = 11
 
         door = roomTo.getRandomDoor()
         if door[0] < 0 or door[0] >= tilesX or door[1] < 0 or door[1] >= tilesY:
-            print("TO: its negative baby", door[0], door[1], tilesX, tilesY)
+            print("TO:  broken coordinates", "doorX: ", door[0], "doorY:", door[1], "tilesX: ", tilesX, "tilesY:", tilesY)
         endX = door[0]
         endY = door[1]
         self.map[endY][endX] = 11
