@@ -21,15 +21,14 @@ class Gnome:
 
     def AStar(self,map):
         self.path = astar(map.map, self.pos, map.exit)
-        print(self.path)
         return
 
     def drawPath(self, win, spriteSize, cameraOffsetX, cameraOffsetY):
         if(self.path):
             for i, point in enumerate(self.path):
                 if i + 1 < len(self.path):
-                    line(win, spriteSize, (100,255,100),
-                        (point[0], point[0], cameraOffsetX, cameraOffsetY, 12, 12, self.path[i + 1][0], self.path[i + 1][1]))
+                    line(win, spriteSize, (255,255,255),
+                        (point[0], point[1], cameraOffsetX, cameraOffsetY, 15, 15, self.path[i + 1][0], self.path[i + 1][1]))
 
                     # pygame.draw.line(win, (255,255,255), (point[0] * 32 + 15 * (spriteSize / 32) , point[1] * 32 + 15 * (spriteSize / 32)), (self.path[i + 1][0] * 32 + 15 * (spriteSize / 32), self.path[i + 1][1] * 32 + 15 * (spriteSize / 32)), 2)
                 pass
