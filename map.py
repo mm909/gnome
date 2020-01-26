@@ -301,25 +301,25 @@ class Map:
                 self.rooms.append(Room(roomX, roomY, roomWidth, roomHeight))
                 roomsIndex = len(self.rooms) - 1
 
-                doorXoffset = -1
-                doorYoffset = randint(0, roomHeight - 1)
-                self.rooms[roomsIndex].addDoor(roomX +doorXoffset, roomY + doorYoffset)
-                self.map[roomY + doorYoffset][roomX + doorXoffset] = 11
+                # doorXoffset = -1
+                # doorYoffset = randint(0, roomHeight - 1)
+                # self.rooms[roomsIndex].addDoor(roomX +doorXoffset, roomY + doorYoffset)
+                # self.map[roomY + doorYoffset][roomX + doorXoffset] = 11
 
-                doorXoffset = roomWidth
-                doorYoffset = randint(0, roomHeight - 1)
-                self.rooms[roomsIndex].addDoor(roomX +doorXoffset, roomY + doorYoffset)
-                self.map[roomY + doorYoffset][roomX + doorXoffset] = 11
-
-                doorYoffset = -1
-                doorXoffset = randint(0, roomWidth - 1)
-                self.rooms[roomsIndex].addDoor(roomX +doorXoffset, roomY + doorYoffset)
-                self.map[roomY + doorYoffset][roomX + doorXoffset] = 11
-
-                doorYoffset = roomHeight
-                doorXoffset = randint(0, roomWidth - 1)
-                self.rooms[roomsIndex].addDoor(roomX +doorXoffset, roomY + doorYoffset)
-                self.map[roomY + doorYoffset][roomX + doorXoffset] = 11
+                # doorXoffset = roomWidth
+                # doorYoffset = randint(0, roomHeight - 1)
+                # self.rooms[roomsIndex].addDoor(roomX +doorXoffset, roomY + doorYoffset)
+                # self.map[roomY + doorYoffset][roomX + doorXoffset] = 11
+                #
+                # doorYoffset = -1
+                # doorXoffset = randint(0, roomWidth - 1)
+                # self.rooms[roomsIndex].addDoor(roomX +doorXoffset, roomY + doorYoffset)
+                # self.map[roomY + doorYoffset][roomX + doorXoffset] = 11
+                #
+                # doorYoffset = roomHeight
+                # doorXoffset = randint(0, roomWidth - 1)
+                # self.rooms[roomsIndex].addDoor(roomX +doorXoffset, roomY + doorYoffset)
+                # self.map[roomY + doorYoffset][roomX + doorXoffset] = 11
 
                 for j  in range(-3, roomHeight + 3):
                     if(roomY + j >= offsetY and roomY + j < tilesY - offsetY):
@@ -369,10 +369,20 @@ class Map:
         dx = 0
         dy = 0
 
-        startX = roomFrom.x
-        startY = roomFrom.y
-        endX = roomTo.x
-        endY = roomTo.y
+        door = roomFrom.getRandomDoor()
+        if door[0] < 0 or door[0] >= tilesX or door[1] < 0 or door[1] >= tilesY:
+            print("FROM: its negative baby", door[0], door[1], tilesX, tilesY)
+        startX = door[0]
+        startY = door[1]
+        self.map[startY][startX] = 11
+
+        door = roomTo.getRandomDoor()
+        if door[0] < 0 or door[0] >= tilesX or door[1] < 0 or door[1] >= tilesY:
+            print("TO: its negative baby", door[0], door[1], tilesX, tilesY)
+        endX = door[0]
+        endY = door[1]
+        self.map[endY][endX] = 11
+
 
         slopeX = abs(startX - endX)
         slopeY = abs(startY - endY)
