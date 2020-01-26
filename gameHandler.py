@@ -7,6 +7,11 @@ from random import *
 from settings import *
 from gnome import *
 
+def distance(pt1, pt2):
+    dist = math.sqrt((pt2[0] - pt1[0])**2 + (pt2[1] - pt1[1])**2)
+    #print("distance: ", dist)
+    return dist
+
 class GameHandler:
 
 
@@ -100,6 +105,8 @@ class GameHandler:
                 self.map.switchWall()
         return
 
+
+
     def CameraMovement(self):
         #makes it so if you move diagonally then you dont get a speed boost by moving the same speed along the x and y axis (completing the triangle)
         cameraVel = [0,0]
@@ -143,6 +150,12 @@ class GameHandler:
             self.CameraMovement()
 
             self.update()
+
+            if(distance(self.player.pos, self.map.exit) < 0.1):
+                self.map.createBackground()
+                startPos = self.map.getOpenPos(True)
+                self.player = Gnome(startPos)
+                self.player.resize(self.map.spriteSize)
 
         pygame.quit()
         return
