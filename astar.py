@@ -1,3 +1,5 @@
+from function import *
+
 class Node():
     """A node class for A* Pathfinding"""
 

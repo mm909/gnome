@@ -7,11 +7,6 @@ from random import *
 from settings import *
 from gnome import *
 
-def distance(pt1, pt2):
-    dist = math.sqrt((pt2[0] - pt1[0])**2 + (pt2[1] - pt1[1])**2)
-    #print("distance: ", dist)
-    return dist
-
 class GameHandler:
 
 
@@ -20,7 +15,8 @@ class GameHandler:
         self.dt = 0
         self.previousTime = time.time()
         self.spriteSize = spriteSize
-
+        self.numPlayers = numPlayers
+        self.finishedPlayers = 0
 
 
         self.background_colour = (0,0,0)
@@ -30,8 +26,12 @@ class GameHandler:
         self.win.fill(self.background_colour)
 
         self.map = Map()
-        startPos = self.map.getOpenPos(True)
-        self.player = Gnome(startPos)
+
+        self.players = []
+        for i in range(self.numPlayers):
+            startPos = self.map.getOpenPos(True)
+            player = Gnome(startPos)
+            self.players.append(player)
 
         pygame.display.flip()
 
@@ -42,14 +42,17 @@ class GameHandler:
     def update(self):
         self.win.fill(self.background_colour)
         self.map.draw(self.win)
-        self.player.draw(self.win, self.map.cameraOffsetX, self.map.cameraOffsetY, self.map.spriteSize)
         if self.map.new:
-            self.player.AStar(self.map)
+            for player in self.players:
+                player.AStar(self.map)
             self.map.new = False
+        for player in self.players:
+            player.moveWithPath(self.dt)
+            player.draw(self.win, self.map.cameraOffsetX, self.map.cameraOffsetY, self.map.spriteSize)
+            if(self.map.debug):
+                player.drawPath(self.win, self.map.spriteSize, self.map.cameraOffsetX, self.map.cameraOffsetY)
         if(self.map.debug):
-            self.player.drawPath(self.win, self.map.spriteSize, self.map.cameraOffsetX, self.map.cameraOffsetY)
             pygame.draw.rect(self.win, (255,255,255), (width/2-2,height/2-2,4,4))
-        self.player.moveWithPath(self.dt)
         pygame.display.flip()
         return
 
@@ -62,10 +65,15 @@ class GameHandler:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
                 if event.key == pygame.K_F1:
+                    self.finishedPlayers = 0
+                    del self.players
+                    self.players = []
                     self.map.createBackground()
-                    startPos = self.map.getOpenPos(True)
-                    self.player = Gnome(startPos)
-                    self.player.resize(self.spriteSize)
+                    for i in range(self.numPlayers):
+                        startPos = self.map.getOpenPos(True)
+                        player = Gnome(startPos)
+                        player.resize(self.spriteSize)
+                        self.players.append(player)
                 if event.key == pygame.K_F2:
                     self.map.debugToggle()
                 if event.key == pygame.K_EQUALS or event.key == pygame.K_KP_PLUS:
@@ -99,8 +107,8 @@ class GameHandler:
                     # self.map.cameraOffsetY -= (height * (4/32)) / 2
                 if spriteResized == True: #just making it easier if for some reason we have to add more function calls we dont just copy and paste lines
                     self.map.setSpriteSize(self.spriteSize)
-                    self.player.resize(self.spriteSize)
-
+                    for player in self.players:
+                        player.resize(self.spriteSize)
             if pygame.mouse.get_pressed()[0]:
                 self.map.switchWall()
         return
@@ -151,11 +159,23 @@ class GameHandler:
 
             self.update()
 
-            if(distance(self.player.pos, self.map.exit) < 0.1):
+            for player in self.players:
+                if(distance(player.pos, self.map.exit) < 0.2 and not player.finished):
+                    self.finishedPlayers += 1
+                    player.finished = True
+
+            if self.finishedPlayers == self.numPlayers:
+                self.finishedPlayers = 0
+                del self.players
+                self.players = []
                 self.map.createBackground()
-                startPos = self.map.getOpenPos(True)
-                self.player = Gnome(startPos)
-                self.player.resize(self.map.spriteSize)
+                for i in range(self.numPlayers):
+                    startPos = self.map.getOpenPos(True)
+                    player = Gnome(startPos)
+                    player.resize(self.spriteSize)
+                    self.players.append(player)
+
+
 
         pygame.quit()
         return

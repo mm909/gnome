@@ -4,11 +4,8 @@ from settings import *
 from sprite import *
 from astar import *
 from draw import *
-
-def distance(pt1, pt2):
-    dist = math.sqrt((pt2[0] - pt1[0])**2 + (pt2[1] - pt1[1])**2)
-    #print("distance: ", dist)
-    return dist
+from function import *
+from random import *
 
 class Gnome:
     def __init__(self,startPos):
@@ -16,35 +13,37 @@ class Gnome:
         self.pos = startPos
         self.target = startPos
         self.path = []
-        self.speed = 3
+        self.speed = randint(3,6)
+        self.finished = False
         return
 
     def moveWithPath(self, dt):
         updateWaypoint = False
-        if(distance(self.target, self.pos) < 0.1 and self.path is not None and len(self.path) >= 1):
-            del self.path[0]
-            updateWaypoint = True
+        if(self.path):
+            if(distance(self.target, self.pos) < 0.2 and len(self.path) >= 1):
+                del self.path[0]
+                updateWaypoint = True
 
-        if self.path is not None and len(self.path) == 0:
-            return
+            if len(self.path) == 0:
+                return
 
-        if updateWaypoint == True:
-            self.pos = self.target
-            self.target = self.path[0]
+            if updateWaypoint == True:
+                self.pos = self.target
+                self.target = self.path[0]
 
 
-        if self.pos[0] - self.target[0] > 0:
-            newpos = (self.pos[0] - self.speed * dt, self.pos[1])
-            self.pos = newpos
-        if self.pos[0] - self.target[0] < 0:
-            newpos = (self.pos[0] + self.speed *dt, self.pos[1])
-            self.pos = newpos
-        if self.pos[1] - self.target[1] > 0:
-            newpos = (self.pos[0], self.pos[1] - self.speed * dt)
-            self.pos = newpos
-        if self.pos[1] - self.target[1] < 0:
-            newpos = (self.pos[0], self.pos[1] + self.speed * dt)
-            self.pos = newpos
+            if self.pos[0] - self.target[0] > 0:
+                newpos = (self.pos[0] - self.speed * dt, self.pos[1])
+                self.pos = newpos
+            if self.pos[0] - self.target[0] < 0:
+                newpos = (self.pos[0] + self.speed *dt, self.pos[1])
+                self.pos = newpos
+            if self.pos[1] - self.target[1] > 0:
+                newpos = (self.pos[0], self.pos[1] - self.speed * dt)
+                self.pos = newpos
+            if self.pos[1] - self.target[1] < 0:
+                newpos = (self.pos[0], self.pos[1] + self.speed * dt)
+                self.pos = newpos
         return
 
     def draw(self, window, ox, oy, ss):
