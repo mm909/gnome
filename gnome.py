@@ -1,8 +1,14 @@
 import pygame
+import math
 from settings import *
 from sprite import *
 from astar import *
 from draw import *
+
+def distance(pt1, pt2):
+    dist = math.sqrt((pt2[0] - pt1[0])**2 + (pt2[1] - pt1[1])**2)
+    #print("distance: ", dist)
+    return dist
 
 class Gnome:
     def __init__(self,startPos):
@@ -10,26 +16,34 @@ class Gnome:
         self.pos = startPos
         self.target = startPos
         self.path = []
-        self.speed = 1
+        self.speed = 3
         return
 
-    def moveWithPath(self):
-        if(self.target == self.pos and len(self.path) >= 1):
+    def moveWithPath(self, dt):
+        updateWaypoint = False
+        if(distance(self.target, self.pos) < 0.1 and len(self.path) >= 1):
             del self.path[0]
+            updateWaypoint = True
+
         if len(self.path) == 0:
             return
-        self.target = self.path[0]
-        if self.pos[0] - self.path[0][0] > 0:
-            newpos = (self.pos[0] - self.speed, self.pos[1])
+
+        if updateWaypoint == True:
+            self.pos = self.target
+            self.target = self.path[0]
+
+
+        if self.pos[0] - self.target[0] > 0:
+            newpos = (self.pos[0] - self.speed * dt, self.pos[1])
             self.pos = newpos
-        if self.pos[0] - self.path[0][0] < 0:
-            newpos = (self.pos[0] + self.speed, self.pos[1])
+        if self.pos[0] - self.target[0] < 0:
+            newpos = (self.pos[0] + self.speed *dt, self.pos[1])
             self.pos = newpos
-        if self.pos[1] - self.path[0][1] > 0:
-            newpos = (self.pos[0], self.pos[1] - self.speed)
+        if self.pos[1] - self.target[1] > 0:
+            newpos = (self.pos[0], self.pos[1] - self.speed * dt)
             self.pos = newpos
-        if self.pos[1] - self.path[0][1] < 0:
-            newpos = (self.pos[0], self.pos[1] + self.speed)
+        if self.pos[1] - self.target[1] < 0:
+            newpos = (self.pos[0], self.pos[1] + self.speed * dt)
             self.pos = newpos
         return
 
@@ -42,7 +56,8 @@ class Gnome:
         return
 
     def AStar(self,map):
-        self.path = astar(map.map, self.pos, map.exit)
+        pos = [int(self.pos[0]), int(self.pos[1])]
+        self.path = astar(map.map, pos, map.exit)
         return
 
     def drawPath(self, win, spriteSize, cameraOffsetX, cameraOffsetY):
