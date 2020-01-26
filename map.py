@@ -5,6 +5,7 @@ from random import *
 from sprite import *
 from draw import *
 from room import *
+from astar import *
 
 class Map:
 
@@ -38,6 +39,7 @@ class Map:
         # self.dirt = pygame.image.load("map/grey_dirt0.png").convert()
         self.door = Sprite("map/dngn_closed_door.png")
         self.stairsDown = Sprite("map/stone_stairs_down.png")
+        self.roomWall = self.wall
 
         self.sprites = []
         self.sprites.append(self.unseen)
@@ -54,6 +56,7 @@ class Map:
         self.sprites.append(self.cobble)
         self.sprites.append(self.door)
         self.sprites.append(self.stairsDown)
+        self.sprites.append(self.roomWall)
 
         self.unseenMap = []
         self.reserved = []
@@ -237,7 +240,8 @@ class Map:
                             if i == 0 or j == 0:   #only does dfs on non-diagonal neighbors to stop diagonal only path connections if  (abs(i) != 1 or abs(j) != 1):
                                 neighborY = y + j
                                 if neighborY >= 0 and neighborY < tilesY:
-                                    if self.map[neighborY][neighborX] > 1 and not (neighborX,neighborY) in localConnections:
+                                    # and self.map[neighborY][neighborX] < 13
+                                    if self.map[neighborY][neighborX] > 1 and not (neighborX,neighborY) in localConnections :
                                         if not (i == 0 and j == 0):
                                             if not (neighborX,neighborY) in self.visitedBackground:
                                                 self.visitedBackground.append((neighborX,neighborY))
@@ -299,27 +303,6 @@ class Map:
             # these two loops can be combined
             if goodRoom:
                 self.rooms.append(Room(roomX, roomY, roomWidth, roomHeight))
-                roomsIndex = len(self.rooms) - 1
-
-                # doorXoffset = -1
-                # doorYoffset = randint(0, roomHeight - 1)
-                # self.rooms[roomsIndex].addDoor(roomX +doorXoffset, roomY + doorYoffset)
-                # self.map[roomY + doorYoffset][roomX + doorXoffset] = 11
-
-                # doorXoffset = roomWidth
-                # doorYoffset = randint(0, roomHeight - 1)
-                # self.rooms[roomsIndex].addDoor(roomX +doorXoffset, roomY + doorYoffset)
-                # self.map[roomY + doorYoffset][roomX + doorXoffset] = 11
-                #
-                # doorYoffset = -1
-                # doorXoffset = randint(0, roomWidth - 1)
-                # self.rooms[roomsIndex].addDoor(roomX +doorXoffset, roomY + doorYoffset)
-                # self.map[roomY + doorYoffset][roomX + doorXoffset] = 11
-                #
-                # doorYoffset = roomHeight
-                # doorXoffset = randint(0, roomWidth - 1)
-                # self.rooms[roomsIndex].addDoor(roomX +doorXoffset, roomY + doorYoffset)
-                # self.map[roomY + doorYoffset][roomX + doorXoffset] = 11
 
                 for j  in range(-3, roomHeight + 3):
                     if(roomY + j >= offsetY and roomY + j < tilesY - offsetY):
@@ -331,6 +314,14 @@ class Map:
                         for k in range(roomWidth):
                             if(roomX + k >= offsetX and roomX + k < tilesX - offsetX):
                                 self.map[roomY + j][roomX + k] = randint(2,9)
+
+                for j in range(roomX -1, roomX + roomWidth+1):
+                    self.map[roomY-1][j] = 13
+                    self.map[roomY + roomHeight][j] = 13
+
+                for j in range(roomY-1, roomY + roomHeight +1):
+                    self.map[j][roomX-1] = 13
+                    self.map[j][roomX + roomWidth] = 13
 
 
         self.connected = []
@@ -352,7 +343,10 @@ class Map:
         roomTo = self.getRoom(localConnections, False)
         while roomTo != -1:
             #connected(endX, endY)
+
+            print("creating a new path")
             Map.createPath(self, roomFrom, roomTo, localConnections)
+            print("path created")
             #print("back from creating path")
 
             roomFrom = self.getRoom(localConnections, True)
@@ -366,60 +360,94 @@ class Map:
         return
 
     def createPath(self, roomFrom, roomTo, localConnections = []):
-        dx = 0
-        dy = 0
+        doorFrom =0
+        doorTo = 0
+        putDoorX = randint(0,1)
+        if putDoorX == 1:
+            if roomFrom.x - roomTo.x < 0:
+                doorFrom = roomFrom.getDoor("right")
+                doorTo = roomTo.getDoor("left")
+            elif roomFrom.x - roomTo.x > 0:
+                doorFrom = roomFrom.getDoor("left")
+                doorTo = roomTo.getDoor("right")
+            else:
+                randomSide = randint(0,1)
+                if randomSide == 1:
+                    doorFrom = roomFrom.getDoor("right")
+                    doorTo = roomTo.getDoor("right")
+                else:
+                    doorFrom = roomFrom.getDoor("left")
+                    doorTo= roomTo.getDoor("left")
+        else:
+            if roomFrom.y - roomTo.y < 0:
+                doorFrom = roomFrom.getDoor("bottom")
+                doorTo = roomTo.getDoor("top")
+            elif roomFrom.y - roomTo.y > 0:
+                doorFrom = roomFrom.getDoor("top")
+                doorTo = roomTo.getDoor("bottom")
+            else:
+                randomSide = randint(0,1)
+                if randomSide == 1:
+                    doorFrom = roomFrom.getDoor("top")
+                    doorTo = roomTo.getDoor("top")
+                else:
+                    doorFrom = roomFrom.getDoor("bottom")
+                    doorTo= roomTo.getDoor("bottom")
 
-        door = roomFrom.getRandomDoor()
-        if door[0] < 0 or door[0] >= tilesX or door[1] < 0 or door[1] >= tilesY:
-            print("FROM:  broken coordinates", "doorX: ", door[0], "doorY:", door[1], "tilesX: ", tilesX, "tilesY:", tilesY)
-        startX = door[0]
-        startY = door[1]
+        if doorFrom[0] < 0 or doorFrom[0] >= tilesX or doorFrom[1] < 0 or doorFrom[1] >= tilesY:
+            print("FROM:  broken coordinates", "doorX: ", doorFrom[0], "doorY:", doorFrom[1], "tilesX: ", tilesX, "tilesY:", tilesY)
+        startX = doorFrom[0]
+        startY = doorFrom[1]
+
+        if doorTo[0] < 0 or doorTo[0] >= tilesX or doorTo[1] < 0 or doorTo[1] >= tilesY:
+            print("TO:  broken coordinates", "doorX: ", doorTo[0], "doorY:", doorTo[1], "tilesX: ", tilesX, "tilesY:", tilesY)
+        endX = doorTo[0]
+        endY = doorTo[1]
+
         self.map[startY][startX] = 11
-
-        door = roomTo.getRandomDoor()
-        if door[0] < 0 or door[0] >= tilesX or door[1] < 0 or door[1] >= tilesY:
-            print("TO:  broken coordinates", "doorX: ", door[0], "doorY:", door[1], "tilesX: ", tilesX, "tilesY:", tilesY)
-        endX = door[0]
-        endY = door[1]
         self.map[endY][endX] = 11
 
+        path = astar(self.map, (startX, startY), (endX, endY), False)
+        if path is None:
+            return
 
-        slopeX = abs(startX - endX)
-        slopeY = abs(startY - endY)
+        print("has a path")
+        for point in path:
+            self.map[point[1]][point[0]] = randint(2,9)
+            Map.connected(self, point[0], point[1], localConnections)
 
-        if startX - endX < 0:
-            dx = 1
-        elif startX - endX > 0:
-            dx = -1
+        self.map[startY][startX] = 11
+        self.map[endY][endX] = 11
 
-        if startY - endY < 0:
-            dy = 1
-        elif startY - endY > 0:
-            dy = -1
+        #
+        # slopeX = abs(startX - endX)
+        # slopeY = abs(startY - endY)
+        #
 
-        #print(endX, endY)
-        moveX = randint(0,1)
-        currX = startX
-        currY = startY
-        while not (endX, endY) in localConnections:
-            #visitedBackground = []
-            if  moveX == True:
-                if slopeX >0:
-                    currX = currX + dx
-                    self.map[currY][currX] = randint(2,9)
-                    slopeX = slopeX - 1
-                    Map.connected(self, currX, currY, localConnections)
-                else:
-                    moveX = False
-
-            elif moveX == False:
-                if slopeY > 0:
-                    currY = currY + dy
-                    self.map[currY][currX] = randint(2,9)
-                    slopeY = slopeY - 1
-                    Map.connected(self, currX, currY, localConnections)
-                else:
-                    moveX = True
+        #
+        # #print(endX, endY)
+        # moveX = randint(0,1)
+        # currX = startX
+        # currY = startY
+        # while not (endX, endY) in localConnections:
+        #     #visitedBackground = []
+        #     if  moveX == True:
+        #         if slopeX >0:
+        #             currX = currX + dx
+        #             self.map[currY][currX] = randint(2,9)
+        #             slopeX = slopeX - 1
+        #             Map.connected(self, currX, currY, localConnections)
+        #         else:
+        #             moveX = False
+        #
+        #     elif moveX == False:
+        #         if slopeY > 0:
+        #             currY = currY + dy
+        #             self.map[currY][currX] = randint(2,9)
+        #             slopeY = slopeY - 1
+        #             Map.connected(self, currX, currY, localConnections)
+        #         else:
+        #             moveX = True
 
         return
 

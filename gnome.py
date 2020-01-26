@@ -21,11 +21,11 @@ class Gnome:
 
     def moveWithPath(self, dt):
         updateWaypoint = False
-        if(distance(self.target, self.pos) < 0.1 and len(self.path) >= 1):
+        if(distance(self.target, self.pos) < 0.1 and self.path is not None and len(self.path) >= 1):
             del self.path[0]
             updateWaypoint = True
 
-        if len(self.path) == 0:
+        if self.path is not None and len(self.path) == 0:
             return
 
         if updateWaypoint == True:

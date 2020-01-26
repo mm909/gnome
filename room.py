@@ -95,6 +95,59 @@ class Room:
                 return self.doors[doorPicker]
         return
 
+
+    def getDoor(self, side):
+
+        found = False
+        foundDoor =0
+
+        for door in self.doors:
+            if side == "left" and door[0] == self.x-1:
+                found = True
+                foundDoor = door
+            elif side == "right" and door[0] == self.x + self.width:
+                found = True
+                foundDoor = door
+            elif side == "top" and door[1] == self.y-1:
+                found = True
+                foundDoor = door
+            elif side == "bottom" and door[1] == self.y + self.height:
+                found = True
+                foundDoor = door
+
+        if found == True:
+            return foundDoor
+        else:
+            return self.createDoor(side)
+
+        return
+
+    def createDoor(self, side):
+        if side == "left":
+            doorX = self.x -1
+            doorY = randint(self.y, self.y + self.height -1)
+            self.addDoor(doorX, doorY)
+            return (doorX, doorY)
+        elif side == "right":
+            doorX = self.x + self.width
+            doorY = randint(self.y, self.y + self.height -1)
+            self.addDoor(doorX, doorY)
+            return (doorX, doorY)
+        elif side == "top":
+            doorX = randint(self.x, self.x + self.width -1)
+            doorY = self.y - 1
+            self.addDoor(doorX, doorY)
+            return (doorX, doorY)
+        elif side == "bottom":
+            doorX = randint(self.x, self.x + self.width -1)
+            doorY = self.y + self.height
+            self.addDoor(doorX, doorY)
+            return (doorX, doorY)
+
+        else:
+            return (-1, -1)
+        return
+
     def isInside(self,x,y):
         if x >= self.x and x < self.x + self.width:
             if y >= self.y and y < self.y + self.height:
