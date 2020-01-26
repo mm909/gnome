@@ -38,10 +38,13 @@ class GameHandler:
         self.win.fill(self.background_colour)
         self.map.draw(self.win)
         self.player.draw(self.win, self.map.cameraOffsetX, self.map.cameraOffsetY, self.map.spriteSize)
-        self.player.AStar(self.map)
+        if self.map.new:
+            self.player.AStar(self.map)
+            self.map.new = False
         if(self.map.debug):
             self.player.drawPath(self.win, self.map.spriteSize, self.map.cameraOffsetX, self.map.cameraOffsetY)
             pygame.draw.rect(self.win, (255,255,255), (width/2-2,height/2-2,4,4))
+        self.player.moveWithPath()
         pygame.display.flip()
         return
 

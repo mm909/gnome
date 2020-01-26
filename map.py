@@ -18,6 +18,7 @@ class Map:
         self.spriteSize = spriteSize
         self.placingSprite = placingSprite
         self.exit = (-1,-1)
+        self.new = True
 
         self.unseen = Sprite("map/dngn_unseen.png")
         # self.wall = Sprite("map/stone2_gray0.png")
@@ -184,6 +185,7 @@ class Map:
         if my >= 0 and my < tilesY and mx >= 0 and mx < tilesX:
             self.map[my][mx] = self.placingSprite
             self.hideWalls()
+        self.new = True
         return
 
     def getStartPoint(self):
@@ -338,6 +340,7 @@ class Map:
         self.hideWalls()
         self.placeExit()
         # print(self.rooms)
+        self.new = True
         return self.map
 
     def connectRooms(self):

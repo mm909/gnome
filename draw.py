@@ -13,6 +13,6 @@ def line(window, spriteSize, fill, details):
     y1 = details[1] * spriteSize + details[3] + details[5] * (spriteSize / 32)
     x2 = details[6] * spriteSize + details[2] + details[4] * (spriteSize / 32)
     y2 = details[7] * spriteSize + details[3] + details[5] * (spriteSize / 32)
-    pygame.draw.line(window, fill, (x1,y1), (x2,y2))
+    pygame.draw.line(window, fill, (x1,y1), (x2,y2), 2)
 
     return

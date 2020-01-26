@@ -8,7 +8,29 @@ class Gnome:
     def __init__(self,startPos):
         self.art = Sprite("player/pig_form.png")
         self.pos = startPos
+        self.target = startPos
         self.path = []
+        self.speed = 1
+        return
+
+    def moveWithPath(self):
+        if(self.target == self.pos and len(self.path) >= 1):
+            del self.path[0]
+        if len(self.path) == 0:
+            return
+        self.target = self.path[0]
+        if self.pos[0] - self.path[0][0] > 0:
+            newpos = (self.pos[0] - self.speed, self.pos[1])
+            self.pos = newpos
+        if self.pos[0] - self.path[0][0] < 0:
+            newpos = (self.pos[0] + self.speed, self.pos[1])
+            self.pos = newpos
+        if self.pos[1] - self.path[0][1] > 0:
+            newpos = (self.pos[0], self.pos[1] - self.speed)
+            self.pos = newpos
+        if self.pos[1] - self.path[0][1] < 0:
+            newpos = (self.pos[0], self.pos[1] + self.speed)
+            self.pos = newpos
         return
 
     def draw(self, window, ox, oy, ss):
