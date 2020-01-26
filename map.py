@@ -17,6 +17,7 @@ class Map:
         self.debug = debug
         self.spriteSize = spriteSize
         self.placingSprite = placingSprite
+        self.exit = (-1,-1)
 
         self.unseen = Sprite("map/dngn_unseen.png")
         # self.wall = Sprite("map/stone2_gray0.png")
@@ -62,6 +63,7 @@ class Map:
 
     def placeExit(self):
         pos = Map.getOpenPos(self, True)
+        self.exit = pos
         self.map[pos[1]][pos[0]] = 12
 
     def hideWalls(self):
@@ -326,7 +328,7 @@ class Map:
                     if(roomY + j >= offsetY and roomY + j < tilesY - offsetY):
                         for k in range(roomWidth):
                             if(roomX + k >= offsetX and roomX + k < tilesX - offsetX):
-                                self.map[roomY + j][roomX + k] = 10
+                                self.map[roomY + j][roomX + k] = randint(2,9)
 
 
         self.connected = []
