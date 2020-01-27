@@ -88,7 +88,7 @@ class Map:
                             for j in range (-1, 2):
                                 neighborY = y + j
                                 if neighborY >= 0 and neighborY < tilesY:
-                                    if self.map[neighborY][neighborX] > 1:
+                                    if self.map[neighborY][neighborX] > 1 and not self.map[neighborY][neighborX] == 13:
                                         shown = True
 
                     if not shown:
